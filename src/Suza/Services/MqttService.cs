@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Suzaku.Bot.Models;
 using Suza.Services;
 using Microsoft.Extensions.Options;
-using Suzaku.Chat;
+using Suzaku.Shared;
 
 namespace Suzaku.Bot.Services
 {

@@ -5,7 +5,7 @@ using Suzaku.Bot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using OpenAiNg;
-using Suzaku.Chat;
+using Suzaku.Shared;
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables()

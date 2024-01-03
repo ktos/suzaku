@@ -1,4 +1,4 @@
-﻿namespace Suzaku.Chat;
+﻿namespace Suzaku.Shared;
 
 public class MqttConfiguration
 {

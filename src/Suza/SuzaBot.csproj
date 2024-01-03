@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Suzaku.Shared\Suzaku.Shared.csproj" />
+    <ProjectReference Include="..\Suzaku.Shared\Suzaku.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

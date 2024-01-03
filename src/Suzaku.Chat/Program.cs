@@ -2,6 +2,7 @@ using Suzaku.Chat;
 using Suzaku.Chat.Client.Pages;
 using Suzaku.Chat.Components;
 using Suzaku.Chat.Services;
+using Suzaku.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 

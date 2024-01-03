@@ -17,21 +17,6 @@ namespace Suzaku.Chat.Models
         public bool BusyMarker { get; set; } = false;
     }
 
-    public class ChatJsonMessage
-    {
-        [JsonPropertyName("id")]
-        public Guid Id { get; set; }
-
-        [JsonPropertyName("response_id")]
-        public Guid? Response { get; set; }
-
-        [JsonPropertyName("content")]
-        public string? Content { get; set; }
-
-        [JsonPropertyName("busy")]
-        public bool BusyMarker { get; set; } = false;
-    }
-
     public enum User
     {
         Human,

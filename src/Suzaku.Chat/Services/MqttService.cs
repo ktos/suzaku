@@ -2,6 +2,7 @@
 using MQTTnet;
 using MQTTnet.Client;
 using Suzaku.Chat.Models;
+using Suzaku.Shared;
 using System.Reflection;
 using System.Text.Json;
 

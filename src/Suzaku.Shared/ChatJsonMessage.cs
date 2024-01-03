@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Suzaku.Bot.Models
+namespace Suzaku.Shared
 {
     public class ChatJsonMessage
     {
