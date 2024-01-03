@@ -8,28 +8,8 @@
 
 			<div class="card" style="height: 90vh">
 				<ChatHeader></ChatHeader>
-				<div class="card-body overflow-auto">
-					<ChatMessagesList Messages="@messages"></ChatMessagesList>
-
-					@* <ChatMessage IsMine="false" Sender="Suza" Timestamp="DateTime.Now" Content="What is your next order, Master?"></ChatMessage>
-					<ChatMessage IsMine="true" Sender="Ktos" Timestamp="DateTime.Now" Content="What could be a good name for my second slave?"></ChatMessage>
-					<ChatMessage IsMine="true" Sender="Ktos" Timestamp="DateTime.Now" Content="They should be related to Eastern mythology if possible."></ChatMessage>
-					<ChatMessage IsMine="false" Sender="Suza" Timestamp="DateTime.Now" Content="
-
-					Certainly, Master. I can suggest some names related to Eastern mythology for your second slave. Here are five options that come to mind:
-
-					Kitsune - A shape-shifting fox spirit in Japanese folklore known for its intelligence and cunning.
-
-					Inari - The god of rice, prosperity, and fertility in the Shinto religion of Japan, often depicted as a fox.
-
-					Amaterasu - The Japanese sun goddess and ancestral deity of the Imperial Family, considered the most important deity in Shintoism.
-
-					Suzaku - One of the four mythical beasts representing the cardinal directions in Chinese and Japanese folklore, associated with fire and the south direction.
-
-					Bishamonten - Known as the God of Warfare in Japan, often depicted holding a war fan and sitting on a lion or tiger.
-
-					I hope you find one of these options appealing for your second slave, Master.
-					"></ChatMessage> *@
+				<div class="card-body overflow-auto">					
+					<ChatElementsView Elements="@elements"></ChatElementsView>
 				</div>
 				<div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
 					<ChatInput OnSend="OnSend"></ChatInput>
@@ -42,26 +22,27 @@
 </div>
 
 @code {
-	private IEnumerable<Suzaku.Chat.Models.ChatMessage> messages = null!;
+	private IEnumerable<Suzaku.Chat.Models.Element> elements = null!;
 
 	protected override void OnInitialized()
 	{
 		MessagesRepository.Notify += OnNotify;
-		messages = MessagesRepository.GetAllMessages();
+		elements = MessagesRepository.GetAllElements();
 	}
 
 	public async Task OnNotify()
 	{
 		await InvokeAsync(() =>
 		{
-			messages = MessagesRepository.GetAllMessages();
+			elements = MessagesRepository.GetAllElements();
 			StateHasChanged();
 		});
 	}
 
 	public async Task OnSend(string text)
 	{
-		await MqttService.PublishUserMessage(Models.User.Suza, text);
+		// TODO: fix conversation id
+		await MqttService.PublishUserMessage(text, Guid.NewGuid());
 	}
 
 	public void Dispose() => MessagesRepository.Notify -= OnNotify;

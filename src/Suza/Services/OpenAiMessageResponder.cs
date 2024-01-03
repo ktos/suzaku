@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Suza.Services
 {
-    internal class BasicMessageResponder : IMessageResponder
+    internal class OpenAiMessageResponder : IMessageResponder
     {
         private readonly OpenAiApi _api;
         private readonly string _systemPrompt;
         private readonly string _botInstruction;
 
-        public BasicMessageResponder(OpenAiApi api, PromptProvider promptProvider)
+        public OpenAiMessageResponder(OpenAiApi api, PromptProvider promptProvider)
         {
             _api = api;
             _systemPrompt = promptProvider.SystemPrompt;

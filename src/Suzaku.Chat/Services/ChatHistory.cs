@@ -1,33 +1,50 @@
 ﻿using Suzaku.Chat.Models;
+using System;
 using System.Collections.ObjectModel;
 
 namespace Suzaku.Chat.Services
 {
 	public class ChatHistory
 	{
-		private ObservableCollection<ChatMessage> _chatMessages;
+		private ObservableCollection<Element> _chatHistory;
 		public event Func<Task>? Notify;
 
 		public ChatHistory()
 		{
-			_chatMessages = [];
+			_chatHistory = [];
 		}
 
-		public void AddMessage(ChatMessage message)
+		public void AddMessage(Message message)
 		{
-			var last = _chatMessages.OrderByDescending(x => x.Timestamp).FirstOrDefault();
-			if (last != null && last.BusyMarker && message.Sender == last.Sender)
-			{
-				_chatMessages.Remove(last);
-			}
-
-			_chatMessages.Add(message);
+			_chatHistory.Add(message);
 			Notify?.Invoke();
 		}
 
-		public ObservableCollection<ChatMessage> GetAllMessages()
+		public ObservableCollection<Element> GetAllElements()
 		{
-			return _chatMessages;
+			return _chatHistory;
+		}
+
+		public void AddBusyMessage(Busy chat)
+		{
+			var last = _chatHistory.Where(x => x is Busy busy && busy.Sender == chat.Sender).FirstOrDefault();
+			if (last == null)
+			{
+				_chatHistory.Add(chat);
+			}
+
+			Notify?.Invoke();
+		}
+
+		internal void RemoveBusyMessagesForSender(string sender)
+		{
+			var last = _chatHistory.Where(x => x is Busy busy && busy.Sender == sender).FirstOrDefault();
+			if (last != null)
+			{
+				_chatHistory.Remove(last);
+			}
+
+			Notify?.Invoke();
 		}
 	}
 }

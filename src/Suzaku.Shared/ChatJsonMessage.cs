@@ -9,28 +9,25 @@ namespace Suzaku.Shared
 {
     public class ChatJsonMessage
     {
-        [JsonPropertyName("id")]
-        public Guid Id { get; set; }
+        [JsonPropertyName("conversation_id")]
+        public required Guid ConversationId { get; set; }
 
-        [JsonPropertyName("response_id")]
-        public Guid? Response { get; set; }
+        [JsonPropertyName("sender")]
+        public required string Sender { get; set; }
 
         [JsonPropertyName("content")]
-        public string? Content { get; set; }
-
-        [JsonPropertyName("busy")]
-        public bool BusyMarker { get; set; } = false;
+        public required string Content { get; set; }
     }
 
     public class SystemJsonMessage
     {
         [JsonPropertyName("sender")]
-        public string? Sender { get; set; }
+        public required string Sender { get; set; }
 
         [JsonPropertyName("content")]
-        public string? Content { get; set; }
+        public required string Content { get; set; }
 
-        [JsonPropertyName("busy")]
-        public bool BusyMarker { get; set; } = false;
+        public const string BUSY = "BUSY";
+        public const string NOT_BUSY = "NOT_BUSY";
     }
 }

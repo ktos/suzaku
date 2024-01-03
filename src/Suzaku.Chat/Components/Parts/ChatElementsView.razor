@@ -1,0 +1,45 @@
+﻿@using Suzaku.Chat.Services
+@using Suzaku.Chat.Models
+
+@foreach (var item in Elements)
+{
+	if (item is Busy busy)
+	{
+		<BusyMarker Sender="@FormatSender(busy)"></BusyMarker>
+	}
+	else if (item is Message message)
+	{
+		<ChatMessage IsMine="@FormatIsMine(message)" Sender="@FormatSender(message)" Timestamp="DateTime.Now" Content="@message.Content"></ChatMessage>
+	}	
+}
+
+@code {
+	[Parameter] public required IEnumerable<Element> Elements { get; set; }
+
+	private bool FormatIsMine(Message message)
+	{
+		return message.Sender == "User";
+	}
+
+	private string FormatSender(Message message)
+	{
+		switch (message.Sender)
+		{
+			case "User":
+				return "Ktos";
+			default:
+				return message.Sender.FirstCharToUpper();
+		}
+	}
+
+	private string FormatSender(Busy message)
+	{
+		switch (message.Sender)
+		{
+			case "User":
+				return "Ktos";
+			default:
+				return message.Sender.FirstCharToUpper();
+		}
+	}
+}
