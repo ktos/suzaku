@@ -1,0 +1,30 @@
+﻿<div class="input-group mb-0">
+	<form method="post" @onsubmit="Enter" class="w-100">
+		<div class="input-group">
+			<InputText @ref="textInput" tabindex="0" class="form-control" placeholder="Type the message" aria-label="message" @bind-Value="message"></InputText>
+			
+			<button class="btn btn-warning" type="submit" id="button-addon2" style="padding-top: .55rem;">
+				<i class="ti ti-send-2"></i>
+			</button>
+		</div>
+	</form>
+</div>
+
+@code {
+	private string message = string.Empty;
+	private InputText textInput;
+
+	[Parameter] public EventCallback<string> OnSend { get; set; }
+
+	private async Task Enter()
+	{
+		await OnSend.InvokeAsync(message);
+		message = string.Empty;
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await textInput.Element!.Value.FocusAsync();
+		await base.OnAfterRenderAsync(firstRender);
+	}
+}

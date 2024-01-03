@@ -1,0 +1,68 @@
+﻿@using Suzaku.Chat.Services
+@inject ChatHistory MessagesRepository
+@inject MqttService MqttService
+
+<div class="container py-5 vh-100">
+	<div class="row d-flex justify-content-center">
+		<div class="col-md-8 col-lg-6 col-xl-4">
+
+			<div class="card" style="height: 90vh">
+				<ChatHeader></ChatHeader>
+				<div class="card-body overflow-auto">
+					<ChatMessagesList Messages="@messages"></ChatMessagesList>
+
+					@* <ChatMessage IsMine="false" Sender="Suza" Timestamp="DateTime.Now" Content="What is your next order, Master?"></ChatMessage>
+					<ChatMessage IsMine="true" Sender="Ktos" Timestamp="DateTime.Now" Content="What could be a good name for my second slave?"></ChatMessage>
+					<ChatMessage IsMine="true" Sender="Ktos" Timestamp="DateTime.Now" Content="They should be related to Eastern mythology if possible."></ChatMessage>
+					<ChatMessage IsMine="false" Sender="Suza" Timestamp="DateTime.Now" Content="
+
+					Certainly, Master. I can suggest some names related to Eastern mythology for your second slave. Here are five options that come to mind:
+
+					Kitsune - A shape-shifting fox spirit in Japanese folklore known for its intelligence and cunning.
+
+					Inari - The god of rice, prosperity, and fertility in the Shinto religion of Japan, often depicted as a fox.
+
+					Amaterasu - The Japanese sun goddess and ancestral deity of the Imperial Family, considered the most important deity in Shintoism.
+
+					Suzaku - One of the four mythical beasts representing the cardinal directions in Chinese and Japanese folklore, associated with fire and the south direction.
+
+					Bishamonten - Known as the God of Warfare in Japan, often depicted holding a war fan and sitting on a lion or tiger.
+
+					I hope you find one of these options appealing for your second slave, Master.
+					"></ChatMessage> *@
+				</div>
+				<div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+					<ChatInput OnSend="OnSend"></ChatInput>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+</div>
+
+@code {
+	private IEnumerable<Suzaku.Chat.Models.ChatMessage> messages = null!;
+
+	protected override void OnInitialized()
+	{
+		MessagesRepository.Notify += OnNotify;
+		messages = MessagesRepository.GetAllMessages();
+	}
+
+	public async Task OnNotify()
+	{
+		await InvokeAsync(() =>
+		{
+			messages = MessagesRepository.GetAllMessages();
+			StateHasChanged();
+		});
+	}
+
+	public async Task OnSend(string text)
+	{
+		await MqttService.PublishUserMessage(Models.User.Suza, text);
+	}
+
+	public void Dispose() => MessagesRepository.Notify -= OnNotify;
+}
