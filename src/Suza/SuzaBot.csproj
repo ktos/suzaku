@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Suzaku.Shared\Suzaku.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Prompts\*.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

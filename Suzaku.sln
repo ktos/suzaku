@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Chat.Client", "src\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuzaBot", "src\Suza\SuzaBot.csproj", "{CE82200E-1E0F-48C8-BEB7-E68AB2FCB327}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suzaku.Shared", "Suzaku.Shared\Suzaku.Shared.csproj", "{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{CE82200E-1E0F-48C8-BEB7-E68AB2FCB327}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE82200E-1E0F-48C8-BEB7-E68AB2FCB327}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE82200E-1E0F-48C8-BEB7-E68AB2FCB327}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

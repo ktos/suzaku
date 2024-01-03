@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>    
+    <ProjectReference Include="..\..\Suzaku.Shared\Suzaku.Shared.csproj" />    
     <ProjectReference Include="..\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
     <PackageReference Include="MQTTnet" Version="4.3.3.952" />
