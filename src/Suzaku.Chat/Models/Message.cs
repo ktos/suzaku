@@ -2,6 +2,8 @@
 
 namespace Suzaku.Chat.Models
 {
+    [JsonDerivedType(typeof(Message), "message")]
+    [JsonDerivedType(typeof(Busy), "busy")]
     public abstract class Element
     {
         public Guid Id { get; set; }

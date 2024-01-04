@@ -1,23 +1,39 @@
 ﻿using Suzaku.Chat.Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace Suzaku.Chat.Services
 {
 	public class ChatHistory
 	{
+		private const string HISTORY_FILE_PATH = "history.json";
 		private ObservableCollection<Element> _chatHistory;
 		public event Func<Task>? Notify;
 
 		public ChatHistory()
 		{
 			_chatHistory = [];
+
+			if (File.Exists(HISTORY_FILE_PATH))
+			{
+				var history = JsonSerializer.Deserialize<IEnumerable<Element>>(File.ReadAllText(HISTORY_FILE_PATH));
+				if (history != null)
+				{
+					foreach (var item in history)
+					{
+						_chatHistory.Add(item);
+					}
+					Notify?.Invoke();
+				}
+			}
 		}
 
 		public void AddMessage(Message message)
 		{
 			_chatHistory.Add(message);
 			Notify?.Invoke();
+			SaveHistory();
 		}
 
 		public ObservableCollection<Element> GetAllElements()
@@ -34,9 +50,10 @@ namespace Suzaku.Chat.Services
 			}
 
 			Notify?.Invoke();
+			SaveHistory();
 		}
 
-		internal void RemoveBusyMessagesForSender(string sender)
+		public void RemoveBusyMessagesForSender(string sender)
 		{
 			var last = _chatHistory.Where(x => x is Busy busy && busy.Sender == sender).FirstOrDefault();
 			if (last != null)
@@ -45,6 +62,12 @@ namespace Suzaku.Chat.Services
 			}
 
 			Notify?.Invoke();
+			SaveHistory();
+		}
+
+		private void SaveHistory()
+		{
+			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_chatHistory));
 		}
 	}
 }

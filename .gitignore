@@ -484,3 +484,4 @@ $RECYCLE.BIN/
 *.swp
 
 **/Prompts/*.txt
+src/Suzaku.Chat/history.json
