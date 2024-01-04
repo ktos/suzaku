@@ -1,20 +1,29 @@
 ﻿@using Suzaku.Chat.Services
 @using Suzaku.Chat.Models
 
-@foreach (var item in Elements)
+@for(int i = 0; i < Elements.Count; i++)
 {
+	var item = Elements[i];
+	var prev = i > 0 ? Elements[i - 1] : null;
+
 	if (item is Busy busy)
 	{
 		<BusyMarker Sender="@FormatSender(busy)"></BusyMarker>
 	}
 	else if (item is Message message)
 	{
-		<ChatMessage IsMine="@FormatIsMine(message)" Sender="@FormatSender(message)" Timestamp="DateTime.Now" Content="@message.Content"></ChatMessage>
+		var grouped = false;
+		if (prev != null && prev is Message prevMsg && prevMsg.Sender == message.Sender && (message.Timestamp - prevMsg.Timestamp) < TimeSpan.FromMinutes(5))
+		{
+			grouped = true;
+		}
+
+		<ChatMessage IsGrouped="grouped" IsMine="@FormatIsMine(message)" Sender="@FormatSender(message)" Timestamp="message.Timestamp" Content="@message.Content"></ChatMessage>
 	}	
 }
 
 @code {
-	[Parameter] public required IEnumerable<Element> Elements { get; set; }
+	[Parameter] public required IList<Element> Elements { get; set; }
 
 	private bool FormatIsMine(Message message)
 	{
