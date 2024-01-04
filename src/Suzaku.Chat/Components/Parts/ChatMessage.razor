@@ -4,13 +4,13 @@
 	{
 		<div class="d-flex justify-content-between">
 			<p class="small mb-1 fw-bold">@Sender</p>
-			@if (DateTime.Now.Date == Timestamp.Date)
+			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToString("t")</p>
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
 			}
 			else
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToString("dd MMM") @Timestamp.ToString("t")</p>
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
 			}
 		</div>
 	}
@@ -31,13 +31,13 @@ else
 	@if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			@if (DateTime.Now.Date == Timestamp.Date)
+			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToString("t")</p>
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
 			}
 			else
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToString("dd MMM") @Timestamp.ToString("t")</p>
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
 			}
 			<p class="small mb-1 fw-bold">@Sender</p>
 		</div>
