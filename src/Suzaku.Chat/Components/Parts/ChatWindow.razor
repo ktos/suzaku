@@ -1,49 +1,65 @@
-﻿@using Suzaku.Chat.Services
+﻿@using Microsoft.JSInterop
+@using Suzaku.Chat.Services
 @inject ChatHistory MessagesRepository
 @inject MqttService MqttService
+@inject IJSRuntime JS
 
 <div class="container py-5 vh-100">
-	<div class="row d-flex justify-content-center">
-		<div class="col-md-8 col-lg-6 col-xl-4">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-4">
 
-			<div class="card" style="height: 90vh">
-				<ChatHeader></ChatHeader>
-				<div class="card-body overflow-auto">					
-					<ChatElementsView Elements="@elements"></ChatElementsView>
-				</div>
-				<div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-					<ChatInput OnSend="OnSend"></ChatInput>
-				</div>
-			</div>
+            <div class="card" style="height: 90vh">
+                <ChatHeader></ChatHeader>
+                <div class="card-body overflow-auto" @ref="listRef">
+                    <ChatElementsView Elements="@elements"></ChatElementsView>
+                </div>
+                <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                    <ChatInput OnSend="OnSend"></ChatInput>
+                </div>
+            </div>
 
-		</div>
-	</div>
+        </div>
+    </div>
 
 </div>
 
 @code {
-	private IEnumerable<Suzaku.Chat.Models.Element> elements = null!;
+    private IEnumerable<Suzaku.Chat.Models.Element> elements = null!;
+    private ElementReference listRef;
 
-	protected override void OnInitialized()
-	{
-		MessagesRepository.Notify += OnNotify;
-		elements = MessagesRepository.GetAllElements();
-	}
+    private void ScrollToEnd()
+    {
+        JS.InvokeVoidAsync("scrollToEnd", new object[] { listRef });
+    }
 
-	public async Task OnNotify()
-	{
-		await InvokeAsync(() =>
-		{
-			elements = MessagesRepository.GetAllElements();
-			StateHasChanged();
-		});
-	}
+    protected override void OnInitialized()
+    {
+        MessagesRepository.Notify += OnNotify;
+        elements = MessagesRepository.GetAllElements();
+    }
 
-	public async Task OnSend(string text)
-	{
-		// TODO: fix conversation id
-		await MqttService.PublishUserMessage(text, Guid.NewGuid());
-	}
+    protected override void OnAfterRender(bool firstRender)
+    {
+        ScrollToEnd();
+        base.OnAfterRender(firstRender);
+    }
 
-	public void Dispose() => MessagesRepository.Notify -= OnNotify;
+    public async Task OnNotify()
+    {
+        await InvokeAsync(() =>
+        {
+            elements = MessagesRepository.GetAllElements();
+            StateHasChanged();
+        });
+
+        ScrollToEnd();
+    }
+
+    public async Task OnSend(string text)
+    {
+        // TODO: fix conversation id
+        await MqttService.PublishUserMessage(text, Guid.NewGuid());
+    }
+
+    public void Dispose() => MessagesRepository.Notify -= OnNotify;
 }
