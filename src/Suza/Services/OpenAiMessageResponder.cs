@@ -22,12 +22,10 @@ namespace Suza.Services
             _botInstruction = promptProvider.PassToTheHumanInstructionPrompt;
         }
 
-        public async Task<string?> RespondAsync(string? message)
+        public async Task<string?> RespondAsync(string sender, string message)
         {
-            if (message == null)
-            {
+            if (sender != "User")
                 return null;
-            }
 
             var messages = new List<ChatMessage>
             {
@@ -45,30 +43,30 @@ namespace Suza.Services
             return null;
         }
 
-        public async Task<string?> SummarizeBotMessageAsync(string sender, string? message)
-        {
-            if (message == null)
-            {
-                return null;
-            }
+        //public async Task<string?> SummarizeBotMessageAsync(string sender, string? message)
+        //{
+        //    if (message == null)
+        //    {
+        //        return null;
+        //    }
 
-            var messages = new List<ChatMessage>
-            {
-                new ChatMessage(ChatMessageRole.System, _systemPrompt),
-                new ChatMessage(
-                    ChatMessageRole.User,
-                    string.Format(_botInstruction, sender) + "\n\n" + message
-                ),
-            };
+        //    var messages = new List<ChatMessage>
+        //    {
+        //        new ChatMessage(ChatMessageRole.System, _systemPrompt),
+        //        new ChatMessage(
+        //            ChatMessageRole.User,
+        //            string.Format(_botInstruction, sender) + "\n\n" + message
+        //        ),
+        //    };
 
-            var result = await _api.Chat.CreateChatCompletionAsync(messages, temperature: 1.1);
+        //    var result = await _api.Chat.CreateChatCompletionAsync(messages, temperature: 1.1);
 
-            if (result.Choices != null && result.Choices.FirstOrDefault() != null)
-            {
-                return result.Choices.FirstOrDefault().Message?.Content;
-            }
+        //    if (result.Choices != null && result.Choices.FirstOrDefault() != null)
+        //    {
+        //        return result.Choices.FirstOrDefault().Message?.Content;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
     }
 }

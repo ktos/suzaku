@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using OpenAiNg;
 using Suzaku.Shared;
 using Suzaku.Bot.Models;
+using SuzaBot.Services;
 
 var config = new Dictionary<string, string?>() { { "Bot:Name", "Suza" } };
 
@@ -30,7 +31,8 @@ var host = Host.CreateDefaultBuilder(args)
                 ApiUrlFormat = configuration.GetSection("OpenAI")["Url"]
             }
         );
-        services.AddSingleton<IMessageResponder, OpenAiMessageResponder>();
+        services.AddSingleton<IMessageResponder, FakeMessageResponder>();
+        //services.AddSingleton<IMessageResponder, OpenAiMessageResponder>();
         services.AddSingleton<MqttService>();
     })
     .Build();

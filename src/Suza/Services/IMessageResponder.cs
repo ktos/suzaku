@@ -8,7 +8,6 @@ namespace Suzaku.Bot.Services
 {
     public interface IMessageResponder
     {
-        Task<string?> SummarizeBotMessageAsync(string bot, string? message);
-        Task<string?> RespondAsync(string? message);
+        Task<string?> RespondAsync(string sender, string message);
     }
 }
