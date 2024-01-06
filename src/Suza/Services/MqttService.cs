@@ -77,7 +77,11 @@ namespace Suzaku.Bot.Services
                             // ignore messages from self, but if to ignore messages from another bots
                             // is left to IMessageResponder implementation
                             await PublishBusyMessage(true);
-                            var result = await _responder.RespondAsync(msg.Sender, msg.Content);
+                            var result = await _responder.RespondAsync(
+                                msg.Sender,
+                                msg.Content,
+                                msg.ConversationId
+                            );
                             if (result != null)
                                 await PublishResponseMessage(result, msg.ConversationId);
 

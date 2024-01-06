@@ -22,7 +22,7 @@ namespace Suza.Services
             _botInstruction = promptProvider.PassToTheHumanInstructionPrompt;
         }
 
-        public async Task<string?> RespondAsync(string sender, string message)
+        public async Task<string?> RespondAsync(string sender, string message, Guid conversationId)
         {
             if (sender != "User")
                 return null;
@@ -33,7 +33,7 @@ namespace Suza.Services
                 new ChatMessage(ChatMessageRole.User, message),
             };
 
-            var result = await _api.Chat.CreateChatCompletionAsync(messages, temperature: 1.1);
+            var result = await _api.Chat.CreateChatCompletionAsync(messages, temperature: 0.9);
 
             if (result.Choices != null && result.Choices.FirstOrDefault() != null)
             {

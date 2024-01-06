@@ -26,6 +26,7 @@
 @code {
     private IList<Suzaku.Chat.Models.Element> elements = null!;
     private ElementReference listRef;
+    private Guid conversationId;
 
     private void ScrollToEnd()
     {
@@ -36,6 +37,7 @@
     {
         MessagesRepository.Notify += OnNotify;
         elements = MessagesRepository.GetAllElements();
+        conversationId = Guid.NewGuid();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -56,9 +58,8 @@
     }
 
     public async Task OnSend(string text)
-    {
-        // TODO: fix conversation id
-        await MqttService.PublishUserMessage(text, Guid.NewGuid());
+    {        
+        await MqttService.PublishUserMessage(text, conversationId);
     }
 
     public void Dispose() => MessagesRepository.Notify -= OnNotify;
