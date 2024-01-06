@@ -1,7 +1,8 @@
 ﻿@using Microsoft.JSInterop
 @using Suzaku.Chat.Services
-@inject ChatHistory MessagesRepository
+@inject ChatHistory ChatHistory
 @inject MqttService MqttService
+@inject ChatCommandService ChatCommandService
 @inject IJSRuntime JS
 
 <div class="container py-5 vh-100">
@@ -35,9 +36,8 @@
 
     protected override void OnInitialized()
     {
-        MessagesRepository.Notify += OnNotify;
-        elements = MessagesRepository.GetAllElements();
-        conversationId = Guid.NewGuid();
+        ChatHistory.Notify += OnNotify;
+        elements = ChatHistory.GetAllElements();
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -50,7 +50,7 @@
     {
         await InvokeAsync(() =>
         {
-            elements = MessagesRepository.GetAllElements();
+            elements = ChatHistory.GetAllElements();
             StateHasChanged();
         });
 
@@ -59,8 +59,19 @@
 
     public async Task OnSend(string text)
     {        
-        await MqttService.PublishUserMessage(text, conversationId);
+        if (ChatCommandService.IsCommand(text))
+        {
+            var result = ChatCommandService.ParseCommand(text);
+            if (result != null)
+            {
+                ChatHistory.AddElement(result);
+            }
+        }
+        else
+        {
+            await MqttService.PublishUserMessage(text, ChatCommandService.ConversationId);
+        }
     }
 
-    public void Dispose() => MessagesRepository.Notify -= OnNotify;
+    public void Dispose() => ChatHistory.Notify -= OnNotify;
 }

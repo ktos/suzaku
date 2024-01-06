@@ -15,6 +15,7 @@ builder.Services
 builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("Mqtt"));
 builder.Services.AddSingleton<ChatHistory>();
 builder.Services.AddSingleton<MqttService>();
+builder.Services.AddScoped<ChatCommandService>();
 
 var app = builder.Build();
 
