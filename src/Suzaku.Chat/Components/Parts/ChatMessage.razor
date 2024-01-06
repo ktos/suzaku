@@ -20,7 +20,7 @@
 			<img src="@($"/avatars/{Sender.ToLower()}.png")" alt="avatar 1" style="width: 55px; height: 100%;" class="rounded-circle">
 		}
 		<div>
-			<p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+			<p class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7; white-space: pre-wrap">
 				@Content
 			</p>
 		</div>
@@ -44,7 +44,7 @@ else
 	}
 	<div class="d-flex flex-row justify-content-end pt-1" style="@(IsGrouped ? "margin-top: -1.2rem; margin-right: 55px" : "")">
 		<div>
-			<p class="small p-2 me-3 text-white rounded-3 bg-warning">
+			<p class="small p-2 me-3 text-white rounded-3 bg-warning white-space: pre-wrap">
 				@Content
 			</p>
 		</div>
