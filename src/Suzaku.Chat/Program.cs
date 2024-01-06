@@ -1,6 +1,7 @@
 using Suzaku.Chat;
 using Suzaku.Chat.Client.Pages;
 using Suzaku.Chat.Components;
+using Suzaku.Chat.Models;
 using Suzaku.Chat.Services;
 using Suzaku.Shared;
 
@@ -13,6 +14,7 @@ builder.Services
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("Mqtt"));
+builder.Services.Configure<UserConfiguration>(builder.Configuration.GetSection("User"));
 builder.Services.AddSingleton<ChatHistory>();
 builder.Services.AddSingleton<MqttService>();
 builder.Services.AddScoped<ChatCommandService>();

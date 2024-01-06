@@ -1,9 +1,13 @@
-﻿@if (!IsMine)
+﻿@using Suzaku.Chat.Models
+@using Suzaku.Chat.Services
+@inject Microsoft.Extensions.Options.IOptions<UserConfiguration> UserConfig
+
+@if (!IsMine)
 {
 	if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			<p class="small mb-1 fw-bold">@Sender</p>
+			<p class="small mb-1 fw-bold">@Sender.FirstCharToUpper()</p>
 			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
 			{
 				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
@@ -39,7 +43,7 @@ else
 			{
 				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
 			}
-			<p class="small mb-1 fw-bold">@Sender</p>
+			<p class="small mb-1 fw-bold">@UserConfig.Value.Name</p>
 		</div>
 	}
 	<div class="d-flex flex-row justify-content-end pt-1" style="@(IsGrouped ? "margin-top: -1.2rem; margin-right: 55px" : "")">
@@ -50,7 +54,7 @@ else
 		</div>
 		@if (!IsGrouped)
 		{
-			<img src="https://ktos.info/assets/avatar.png" class="rounded-circle"
+			<img src="@UserConfig.Value.Avatar" class="rounded-circle"
 				 alt="avatar 1" style="width: 55px; height: 100%;">
 		}
 	</div>

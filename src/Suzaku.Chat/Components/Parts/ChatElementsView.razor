@@ -1,5 +1,7 @@
-﻿@using Suzaku.Chat.Services
+﻿@using Microsoft.Extensions.Options
+@using Suzaku.Chat.Services
 @using Suzaku.Chat.Models
+@inject IOptions<UserConfiguration> UserConfig
 
 @for(int i = 0; i < Elements.Count; i++)
 {
@@ -8,7 +10,7 @@
 
 	if (item is Busy busy)
 	{
-		<BusyMarker Sender="@FormatSender(busy)"></BusyMarker>
+		<BusyMarker Sender="@busy.Sender"></BusyMarker>
 	}
 	else if (item is Message message)
 	{
@@ -18,7 +20,7 @@
 			grouped = true;
 		}
 
-		<ChatMessage IsGrouped="grouped" IsMine="@FormatIsMine(message)" Sender="@FormatSender(message)" Timestamp="message.Timestamp" Content="@message.Content"></ChatMessage>
+		<ChatMessage IsGrouped="grouped" IsMine="@FormatIsMine(message)" Sender="@message.Sender" Timestamp="message.Timestamp" Content="@message.Content"></ChatMessage>
 	}	
 }
 
@@ -28,27 +30,5 @@
 	private bool FormatIsMine(Message message)
 	{
 		return message.Sender == "User";
-	}
-
-	private string FormatSender(Message message)
-	{
-		switch (message.Sender)
-		{
-			case "User":
-				return "Ktos";
-			default:
-				return message.Sender.FirstCharToUpper();
-		}
-	}
-
-	private string FormatSender(Busy message)
-	{
-		switch (message.Sender)
-		{
-			case "User":
-				return "Ktos";
-			default:
-				return message.Sender.FirstCharToUpper();
-		}
 	}
 }
