@@ -18,10 +18,11 @@ class CustomBot(SuzakuBot):
     def on_message(self, client, userdata, msg):        
         sender, message, conversation = self.extract_message(msg)
 
-        if sender != self.user_name:
-            return        
+        # if sender != self.user_name:
+        #     return
 
-        if message.startswith("Hey") or message.startswith("Hi"):
+        if message.startswith(f"{bot_name}") or f"@{bot_name}" in message:
+            #if message.startswith("Hey") or message.startswith("Hi"):
             self.respond_with_busy(f"Hey, {sender}!", conversation)
             
 if __name__ == '__main__':

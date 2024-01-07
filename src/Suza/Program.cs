@@ -31,7 +31,7 @@ var host = Host.CreateDefaultBuilder(args)
                 ApiUrlFormat = configuration.GetSection("OpenAI")["Url"]
             }
         );
-        services.AddSingleton<IMessageResponder, FakeMessageResponder>();
+        services.AddSingleton<IMessageResponder, TestMessageResponder>();
         //services.AddSingleton<IMessageResponder, OpenAiMessageResponder>();
         services.AddSingleton<MqttService>();
     })
