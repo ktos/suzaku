@@ -1,4 +1,4 @@
-﻿namespace Suzaku.Bot
+﻿namespace Suzaku.Bot.Services
 {
     public class ConversationHistory
     {

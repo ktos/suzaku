@@ -7,13 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Chat", "src\Suzaku.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Chat.Client", "src\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj", "{1B21D3FC-CD79-40CF-982A-00795A63BD0B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuzaBot", "src\Suza\SuzaBot.csproj", "{CE82200E-1E0F-48C8-BEB7-E68AB2FCB327}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleBot", "src\ExampleBot\ExampleBot.csproj", "{CE82200E-1E0F-48C8-BEB7-E68AB2FCB327}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Shared", "src\Suzaku.Shared\Suzaku.Shared.csproj", "{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Wpf", "src\Suzaku.Wpf\Suzaku.Wpf.csproj", "{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suzaku.Bot", "src\Suzaku.Bot\Suzaku.Bot.csproj", "{49C30235-D985-40CA-84AA-037D0F567ABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Bot", "src\Suzaku.Bot\Suzaku.Bot.csproj", "{49C30235-D985-40CA-84AA-037D0F567ABC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +35,6 @@ Global
 		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{49C30235-D985-40CA-84AA-037D0F567ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{49C30235-D985-40CA-84AA-037D0F567ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49C30235-D985-40CA-84AA-037D0F567ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU

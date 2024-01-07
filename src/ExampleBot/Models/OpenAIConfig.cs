@@ -1,4 +1,4 @@
-﻿namespace Suzaku.Bot.Models;
+﻿namespace ExampleBot.Models;
 
 public class OpenAIConfig
 {

@@ -483,7 +483,6 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-**/Prompts/*.txt
 src/Suzaku.Chat/history.json
 
 # Virtualenv
@@ -498,4 +497,5 @@ src/Suzaku.Chat/history.json
 pyvenv.cfg
 .venv
 pip-selfcheck.json
-config.json
+
+docker.cmd

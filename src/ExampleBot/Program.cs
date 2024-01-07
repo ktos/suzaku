@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Suza.Services;
 using Suzaku.Bot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using OpenAiNg;
 using Suzaku.Shared;
 using Suzaku.Bot.Models;
-using SuzaBot.Services;
+using ExampleBot.Services;
 
-var config = new Dictionary<string, string?>() { { "Bot:Name", "Suza" } };
+var config = new Dictionary<string, string?>() { { "Bot:Name", "ExampleBot" } };
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddEnvironmentVariables()
@@ -24,7 +23,7 @@ var host = Host.CreateDefaultBuilder(args)
 
         services.Configure<MqttConfiguration>(configuration.GetSection("Mqtt"));
         services.Configure<BotConfiguration>(configuration.GetSection("Bot"));
-        services.AddSingleton<PromptProvider>();
+        services.AddSingleton<IPromptProvider, BasicPromptProvider>();
         services.AddSingleton(
             new OpenAiApi(configuration.GetSection("OpenAI")["ApiKey"])
             {

@@ -4,17 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Suza.Services
+namespace Suzaku.Bot.Services
 {
-    public class PromptProvider
+    public class FilePromptProvider : IPromptProvider
     {
-        public PromptProvider()
+        public FilePromptProvider()
         {
             SystemPrompt = File.ReadAllText("Prompts/system.txt");
-            PassToTheHumanInstructionPrompt = File.ReadAllText("Prompts/passtothehuman.txt");
         }
 
         public string SystemPrompt { get; }
-        public string PassToTheHumanInstructionPrompt { get; }
     }
 }

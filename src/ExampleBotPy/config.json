@@ -1,0 +1,5 @@
+{
+    "broker": "mqtt.example.com",
+    "brokerPort": 1883,
+    "bot_name": "ExampleBotPy"
+}

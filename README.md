@@ -16,27 +16,19 @@ It publishes User's messages on `suzaku/chat` topic, as a JSON messages.
 
 ![image](docs/suzaku-chat-screenshot.png)
 
-The goal is to make it in a Copilot-like window available with a hotkey on my
-computers. For this, the WPF part embedding the WebView2 is made.
-
 Why MQTT? Because many systems at my home are already running on MQTT, and it
 allows me to freely add new components in different programming languages.
 
-## Suzaku.Bot
+## ExampleBot
 
-Suzaku.Bot is a set of common pieces to build a bot.
+ExampleBot is one of the bots, written in C# -- it is listening on `suzaku/chat`
+for User's requests, and can respond to them automatically, also by publishing
+"writing" messages (indicators), which may be important to see that the result
+is still being generated.
 
-## Suza
+Common parts to build a C# bot are available as a Suzaku.Bot class library.
 
-Suza is one of the bots -- it is listening on `suzaku/chat` for my requests,
-passing the requests to the local OpenAI-compatible endpoints, and sending the
-responses to `suzaku/chat` topic for the Blazor app to display them.
+## ExampleBotPy
 
-Suza is also listening to the `suzaku/suza/chat_system` topic, on which if there
-will be published messages from other bots, it can pass it to the user changing
-from JSON into more natural form.
-
-The goal is to publish data as JSON, for example from calendar or sensors, and
-get them analyzed and rephrased into natural language with LLM.
-
-Suza needs a system prompt in a `system.txt` file in the `Prompts` subdirectory.
+ExampleBotPy is showing how to prepare example bot in Python, building upon a
+provided base class SuzakuBot.

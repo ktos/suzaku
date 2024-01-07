@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SuzaBot.Services
+namespace ExampleBot.Services
 {
     internal class TestMessageResponder : HistoryAwareMessageResponder
     {
