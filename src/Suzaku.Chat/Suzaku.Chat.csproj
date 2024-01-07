@@ -14,7 +14,7 @@
     <ProjectReference Include="..\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj" />    
     <PackageReference Include="Markdig" Version="0.34.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="MQTTnet" Version="4.3.3.952" />
   </ItemGroup>
 
