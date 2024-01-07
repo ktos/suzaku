@@ -23,7 +23,7 @@ class CustomBot(SuzakuBot):
 
         if message.startswith(f"{bot_name}") or f"@{bot_name}" in message:
             #if message.startswith("Hey") or message.startswith("Hi"):
-            self.respond_with_busy(f"Hey, {sender}!", conversation)
+            self.respond_with_busy(f"Hey, {sender}! **smiles**", conversation)
             
 if __name__ == '__main__':
     chat_bot = CustomBot(broker, port, bot_name)

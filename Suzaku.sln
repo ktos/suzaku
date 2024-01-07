@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SuzaBot", "src\Suza\SuzaBot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Shared", "src\Suzaku.Shared\Suzaku.Shared.csproj", "{1A9ECFB2-7DE3-4EA4-ABD0-EAB66D3E33AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suzaku.Wpf", "src\Suzaku.Wpf\Suzaku.Wpf.csproj", "{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suzaku.Wpf", "src\Suzaku.Wpf\Suzaku.Wpf.csproj", "{AC3A287C-E8DE-45F1-A0DF-85770A7042F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suzaku.Bot", "src\Suzaku.Bot\Suzaku.Bot.csproj", "{49C30235-D985-40CA-84AA-037D0F567ABC}"
 EndProject
