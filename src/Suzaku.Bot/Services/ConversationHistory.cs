@@ -1,6 +1,6 @@
-﻿namespace SuzaBot.Services
+﻿namespace Suzaku.Bot
 {
-    class ConversationHistory
+    public class ConversationHistory
     {
         private readonly Dictionary<Guid, Queue<(string, string)>> _history = new();
 

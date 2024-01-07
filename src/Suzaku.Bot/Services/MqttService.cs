@@ -88,6 +88,7 @@ namespace Suzaku.Bot.Services
                             await PublishBusyMessage(false);
                         }
                     }
+                    // TODO: implement a private chat support
                 }
                 catch (JsonException)
                 {

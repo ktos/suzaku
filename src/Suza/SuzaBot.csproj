@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Suzaku.Bot\Suzaku.Bot.csproj" />
     <ProjectReference Include="..\Suzaku.Shared\Suzaku.Shared.csproj" />
   </ItemGroup>
 
