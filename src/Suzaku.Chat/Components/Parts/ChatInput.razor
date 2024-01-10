@@ -1,7 +1,7 @@
 ﻿<div class="input-group mb-0">
 	<form method="post" @onsubmit="Enter" class="w-100">
 		<div class="input-group">
-			<InputText @ref="textInput" tabindex="0" class="form-control focus-ring focus-ring-light" placeholder="Type the message" aria-label="message" @bind-Value="message"></InputText>
+			<textarea @onkeyup="_handleKeyPress" @ref="textInput" @bind="message" @bind:event="oninput" tabindex="0" class="form-control focus-ring focus-ring-light" placeholder="Type the message (Shift+Enter for newline)" aria-label="message"></textarea>
 			
 			<button class="btn btn-warning" type="submit" id="button-addon2" style="padding-top: .55rem;">
 				<i class="ti ti-send-2"></i>
@@ -12,19 +12,30 @@
 
 @code {
 	private string message = string.Empty;
-	private InputText textInput;
+	private ElementReference textInput;
 
 	[Parameter] public EventCallback<string> OnSend { get; set; }
 
+	private async Task _handleKeyPress(KeyboardEventArgs e)
+	{
+		if (e.Key == "Enter" && !e.ShiftKey)
+		{
+			await Enter();			
+		}
+	}
+
 	private async Task Enter()
 	{
-		await OnSend.InvokeAsync(message);
-		message = string.Empty;
+		if (!string.IsNullOrWhiteSpace(message))
+		{
+			await OnSend.InvokeAsync(message);
+			message = string.Empty;
+		}
 	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		await textInput.Element!.Value.FocusAsync();
+		await textInput.FocusAsync();
 		await base.OnAfterRenderAsync(firstRender);
 	}
 }
