@@ -1,4 +1,3 @@
-using BlazorStrap;
 using Microsoft.Extensions.FileProviders;
 using Suzaku.Chat;
 using Suzaku.Chat.Client.Pages;
@@ -14,8 +13,6 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
-
-builder.Services.AddBlazorStrap();
 
 builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("Mqtt"));
 builder.Services.Configure<UserConfiguration>(builder.Configuration.GetSection("User"));
