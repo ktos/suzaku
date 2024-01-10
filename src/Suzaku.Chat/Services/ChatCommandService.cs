@@ -26,6 +26,7 @@ namespace Suzaku.Chat.Services
             if (command == "/new")
             {
                 ConversationId = Guid.NewGuid();
+                return new NewConversationMarker { Timestamp = DateTime.UtcNow };
             }
 
             if (command == "/busy")
