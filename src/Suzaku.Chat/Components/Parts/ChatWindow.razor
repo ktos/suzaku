@@ -10,18 +10,23 @@
 		<div class="col-md-8 col-lg-6 col-xl-4">
 
 			<div class="card" style="height: 90vh">
-				<ChatHeader></ChatHeader>
-				<div class="card-body overflow-auto" @ref="listRef">
-					<ChatElementsView Elements="@elements"></ChatElementsView>
-				</div>
-				<div class="card-footer text-muted ">
+				<div class="card-header"
+					 style="border-top: 4px solid #ffa900;">
+					<div class="d-flex justify-content-between align-items-center">
+						<h5 class="mb-0">Suzaku</h5>
+						<div class="d-flex flex-row align-items-center">					
+							<button class="btn btn-primary m-1" data-bs-target="#collapse1" data-bs-toggle="collapse"><i class="ti ti-paperclip"></i></button>
+						</div>
+					</div>
 					<div class="collapse" id="collapse1">
 						<ChatAttachmentUpload OnSendFile="OnSendFile"></ChatAttachmentUpload>
 					</div>
-
-					<div class="d-flex justify-content-start align-items-center p-3">
-						<ChatInput OnSend="OnSend"></ChatInput>
-					</div>
+				</div>
+				<div class="card-body overflow-auto" @ref="listRef">
+					<ChatElementsView Elements="@elements"></ChatElementsView>
+				</div>
+				<div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+					<ChatInput OnSend="OnSend"></ChatInput>
 				</div>
 			</div>
 
