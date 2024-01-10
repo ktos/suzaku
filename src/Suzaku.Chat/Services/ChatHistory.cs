@@ -53,6 +53,11 @@ namespace Suzaku.Chat.Services
 			}
 		}
 
+		public List<string?> GetAllChatNames()
+		{
+			return _chatHistory.Select(x => x.ChatName).Distinct().ToList();
+		}
+
 		public void AddBusyMessage(Busy chat)
 		{
 			var last = _chatHistory.Where(x => x is Busy busy && busy.Sender == chat.Sender).FirstOrDefault();

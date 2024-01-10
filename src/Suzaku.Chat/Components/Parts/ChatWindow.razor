@@ -19,7 +19,10 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li><a class="dropdown-item" href="/">Group chat</a></li>
-								<li><a class="dropdown-item" href="/suza">Suza</a></li>
+								@foreach (var item in ChatHistory.GetAllChatNames().Where(x => x is not null))
+								{
+									<li><a class="dropdown-item" href="/@item.ToLower()">@item</a></li>
+								}
 								<li><span class="dropdown-item"><form @onsubmit="NewChatEntered"><InputText class="form-control" @bind-Value="newChat"></InputText></form></span></li>
 							</ul>
 						</div>
