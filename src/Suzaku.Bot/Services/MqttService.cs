@@ -71,21 +71,38 @@ namespace Suzaku.Bot.Services
                     {
                         var msg = JsonSerializer.Deserialize<ChatJsonMessage>(content);
 
+                        // message from human or another agent
+                        // ignore messages from self, but if to ignore messages from another bots
+                        // is left to IMessageResponder implementation
                         if (msg != null && msg.Sender != _botName)
                         {
-                            // message from human or another agent
-                            // ignore messages from self, but if to ignore messages from another bots
-                            // is left to IMessageResponder implementation
-                            await PublishBusyMessage(true);
-                            var result = await _responder.RespondAsync(
-                                msg.Sender,
-                                msg.Content,
-                                msg.ConversationId
-                            );
-                            if (result != null)
-                                await PublishResponseMessage(result, msg.ConversationId);
+                            // check if the message is an attachment
+                            if (msg.Content.StartsWith("file:"))
+                            {
+                                await PublishBusyMessage(true);
+                                var result = await _responder.HandleFileUploadedAsync(
+                                    msg.Sender,
+                                    msg.Content.Replace("file:", ""),
+                                    msg.ConversationId
+                                );
+                                if (result != null)
+                                    await PublishResponseMessage(result, msg.ConversationId);
 
-                            await PublishBusyMessage(false);
+                                await PublishBusyMessage(false);
+                            }
+                            else
+                            {
+                                await PublishBusyMessage(true);
+                                var result = await _responder.RespondAsync(
+                                    msg.Sender,
+                                    msg.Content,
+                                    msg.ConversationId
+                                );
+                                if (result != null)
+                                    await PublishResponseMessage(result, msg.ConversationId);
+
+                                await PublishBusyMessage(false);
+                            }
                         }
                     }
                     // TODO: implement a private chat support

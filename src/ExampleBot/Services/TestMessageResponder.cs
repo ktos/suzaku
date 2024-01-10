@@ -18,6 +18,20 @@ namespace ExampleBot.Services
             _name = options.Value.Name;
         }
 
+        public override async Task<string?> HandleFileUploadedAsync(
+            string sender,
+            string fileName,
+            Guid conversationId
+        )
+        {
+            if (sender != "User")
+            {
+                return null;
+            }
+
+            return "I cannot work with files :(";
+        }
+
         public override async Task<string?> RespondAsync(
             string sender,
             string message,

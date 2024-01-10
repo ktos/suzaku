@@ -42,5 +42,10 @@ namespace Suzaku.Bot.Services
             string message,
             Guid conversationId
         );
+        public abstract Task<string?> HandleFileUploadedAsync(
+            string sender,
+            string fileName,
+            Guid conversationId
+        );
     }
 }

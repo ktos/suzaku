@@ -15,6 +15,15 @@ namespace Suza.Services
             _systemPrompt = promptProvider.SystemPrompt;
         }
 
+        public async Task<string?> HandleFileUploadedAsync(
+            string sender,
+            string fileName,
+            Guid conversationId
+        )
+        {
+            return null;
+        }
+
         public async Task<string?> RespondAsync(string sender, string message, Guid conversationId)
         {
             if (sender != "User")
