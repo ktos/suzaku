@@ -21,7 +21,7 @@ namespace Suzaku.Chat.Services
 
         private string? TopicToChatName(string topic)
         {
-            if (topic == PUBLIC_TOPIC)
+            if (topic == PUBLIC_TOPIC || topic == PUBLIC_OOB_TOPIC)
                 return null;
 
             return topic.Replace("suzaku/", "").Replace("/chat", "").Replace("_system", "");

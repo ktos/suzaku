@@ -18,7 +18,8 @@ namespace Suzaku.Bot.Services
         private readonly string _botName;
         private readonly string _chatTopic;
         private readonly string _oobTopic;
-        private readonly string _botPrivateTopic;
+        private readonly string _oobPrivateTopic;
+        private readonly string _privateTopic;
 
         public MqttService(
             ILogger<MqttService> logger,
@@ -32,7 +33,8 @@ namespace Suzaku.Bot.Services
             _botName = botOptions.Value.Name;
             _chatTopic = "suzaku/chat";
             _oobTopic = $"suzaku/chat_system";
-            _botPrivateTopic = $"suzaku/{_botName}/chat";
+            _oobPrivateTopic = $"suzaku/{_botName.ToLower()}/chat_system";
+            _privateTopic = $"suzaku/{_botName.ToLower()}/chat";
 
             mqttFactory = new MqttFactory();
             mqttClient = mqttFactory.CreateMqttClient();
@@ -67,8 +69,13 @@ namespace Suzaku.Bot.Services
                         //        await PublishResponseMessage(msg, result);
                         //}
                     }
-                    else if (e.ApplicationMessage.Topic == _chatTopic)
+                    else if (
+                        e.ApplicationMessage.Topic == _chatTopic
+                        || e.ApplicationMessage.Topic == _privateTopic
+                    )
                     {
+                        bool isPrivate = e.ApplicationMessage.Topic == _privateTopic;
+
                         var msg = JsonSerializer.Deserialize<ChatJsonMessage>(content);
 
                         // message from human or another agent
@@ -79,33 +86,40 @@ namespace Suzaku.Bot.Services
                             // check if the message is an attachment
                             if (msg.Content.StartsWith("file:"))
                             {
-                                await PublishBusyMessage(true);
+                                await PublishBusyMessage(true, isPrivate);
                                 var result = await _responder.HandleFileUploadedAsync(
                                     msg.Sender,
                                     msg.Content.Replace("file:", ""),
                                     msg.ConversationId
                                 );
                                 if (result != null)
-                                    await PublishResponseMessage(result, msg.ConversationId);
+                                    await PublishResponseMessage(
+                                        result,
+                                        msg.ConversationId,
+                                        isPrivate
+                                    );
 
-                                await PublishBusyMessage(false);
+                                await PublishBusyMessage(false, isPrivate);
                             }
                             else
                             {
-                                await PublishBusyMessage(true);
+                                await PublishBusyMessage(true, isPrivate);
                                 var result = await _responder.RespondAsync(
                                     msg.Sender,
                                     msg.Content,
                                     msg.ConversationId
                                 );
                                 if (result != null)
-                                    await PublishResponseMessage(result, msg.ConversationId);
+                                    await PublishResponseMessage(
+                                        result,
+                                        msg.ConversationId,
+                                        isPrivate
+                                    );
 
-                                await PublishBusyMessage(false);
+                                await PublishBusyMessage(false, isPrivate);
                             }
                         }
                     }
-                    // TODO: implement a private chat support
                 }
                 catch (JsonException)
                 {
@@ -124,13 +138,17 @@ namespace Suzaku.Bot.Services
                 .CreateSubscribeOptionsBuilder()
                 .WithTopicFilter(f => f.WithTopic(_oobTopic))
                 .WithTopicFilter(f => f.WithTopic(_chatTopic))
-                .WithTopicFilter(f => f.WithTopic(_botPrivateTopic))
+                .WithTopicFilter(f => f.WithTopic(_privateTopic))
                 .Build();
 
             await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
         }
 
-        public async Task PublishResponseMessage(string content, Guid conversationId)
+        public async Task PublishResponseMessage(
+            string content,
+            Guid conversationId,
+            bool isPrivate
+        )
         {
             var chatMessage = new ChatJsonMessage
             {
@@ -140,19 +158,19 @@ namespace Suzaku.Bot.Services
             };
 
             var mqttMessage = new MqttApplicationMessageBuilder()
-                .WithTopic(_chatTopic)
+                .WithTopic(isPrivate ? _privateTopic : _chatTopic)
                 .WithPayload(JsonSerializer.Serialize(chatMessage))
                 .Build();
 
             await mqttClient.PublishAsync(mqttMessage);
         }
 
-        public async Task PublishMessage(string content)
+        public async Task PublishMessage(string content, bool isPrivate)
         {
-            await PublishResponseMessage(content, Guid.NewGuid());
+            await PublishResponseMessage(content, Guid.NewGuid(), isPrivate);
         }
 
-        public async Task PublishBusyMessage(bool isBusy = true)
+        public async Task PublishBusyMessage(bool isBusy, bool isPrivate)
         {
             var chatMessage = new SystemJsonMessage
             {
@@ -161,7 +179,7 @@ namespace Suzaku.Bot.Services
             };
 
             var mqttMessage = new MqttApplicationMessageBuilder()
-                .WithTopic(_oobTopic)
+                .WithTopic(isPrivate ? _oobPrivateTopic : _oobTopic)
                 .WithPayload(JsonSerializer.Serialize(chatMessage))
                 .Build();
 

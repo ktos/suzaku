@@ -52,7 +52,7 @@ namespace ExampleBot.Services
 
         private bool IsMessageToMe(string message)
         {
-            return message.Contains($"@{_name}") || message.StartsWith(@"{_name}");
+            return message.Contains($"@{_name}") || message.StartsWith($"{_name}");
         }
     }
 }
