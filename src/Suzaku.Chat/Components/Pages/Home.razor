@@ -1,6 +1,10 @@
-﻿@page "/"
+﻿@page "/{chat?}"
 @rendermode InteractiveServer
 
 <PageTitle>Suzaku – Home</PageTitle>
 
-<ChatWindow></ChatWindow>
+<ChatWindow ChatName="@Chat?.ToLower()"></ChatWindow>
+
+@code {
+    [Parameter] public string? Chat { get; set; }
+}
