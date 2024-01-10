@@ -2,13 +2,17 @@
 	<form method="post" @onsubmit="Enter" class="w-100">
 		<div class="input-group">
 			<textarea @onkeyup="_handleKeyPress" @ref="textInput" @bind="message" @bind:event="oninput" tabindex="0" class="form-control focus-ring focus-ring-light" placeholder="Type the message (Shift+Enter for newline)" aria-label="message"></textarea>
-			
+
 			<button class="btn btn-warning" type="submit" id="button-addon2" style="padding-top: .55rem;">
 				<i class="ti ti-send-2"></i>
 			</button>
+
+			<BSButton Color="BSColor.Primary" Target="collapse1"><i class="ti ti-paperclip"></i></BSButton>
 		</div>
 	</form>
 </div>
+
+
 
 @code {
 	private string message = string.Empty;
@@ -20,7 +24,7 @@
 	{
 		if (e.Key == "Enter" && !e.ShiftKey)
 		{
-			await Enter();			
+			await Enter();
 		}
 	}
 

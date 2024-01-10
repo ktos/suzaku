@@ -499,3 +499,4 @@ pyvenv.cfg
 pip-selfcheck.json
 
 docker.cmd
+uploads/

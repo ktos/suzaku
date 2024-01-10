@@ -1,0 +1,69 @@
+﻿@using Suzaku.Chat.Models
+@using Suzaku.Chat.Services
+@inject Microsoft.Extensions.Options.IOptions<UserConfiguration> UserConfig
+
+@if (!IsMine)
+{
+	if (!IsGrouped)
+	{
+		<div class="d-flex justify-content-between">
+			<p class="small mb-1 fw-bold">@Sender.FirstCharToUpper()</p>
+			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
+			{
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
+			}
+			else
+			{
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
+			}
+		</div>
+	}
+	<div class="d-flex flex-row justify-content-start" style="@(IsGrouped ? "margin-top: -0.80rem; margin-left: 55px" : "")">
+		@if (!IsGrouped)
+		{
+			<img src="@($"/avatars/{Sender.ToLower()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">
+		}
+		<div>
+			<div class="small ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
+				<p><i class="ti ti-paperclip"></i> <a href="/uploads/@Content">@Content</a></p>
+			</div>
+		</div>
+	</div>
+}
+else
+{
+	@if (!IsGrouped)
+	{
+		<div class="d-flex justify-content-between">
+			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
+			{
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
+			}
+			else
+			{
+				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
+			}
+			<p class="small mb-1 fw-bold">@UserConfig.Value.Name</p>
+		</div>
+	}
+	<div class="d-flex flex-row justify-content-end pt-1" style="@(IsGrouped ? "margin-top: -1.2rem; margin-right: 55px" : "")">
+		<div>
+			<div class="small p-2 pt-0 pb-0 me-3 text-white rounded-3 bg-warning">
+				<p><i class="ti ti-paperclip"></i> <a href="/uploads/@Content">@Content</a></p>
+			</div>
+		</div>
+		@if (!IsGrouped)
+		{
+			<img src="@UserConfig.Value.Avatar" class="rounded-circle"
+				 alt="" style="width: 55px; height: 100%;">
+		}
+	</div>
+}
+
+@code {
+	[Parameter] public string Sender { get; set; }
+	[Parameter] public string Content { get; set; }
+	[Parameter] public DateTime Timestamp { get; set; }
+	[Parameter] public bool IsMine { get; set; }
+	[Parameter] public bool IsGrouped { get; set; }
+}

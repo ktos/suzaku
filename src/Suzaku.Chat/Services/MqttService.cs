@@ -85,7 +85,22 @@ namespace Suzaku.Chat.Services
                                 Timestamp = DateTime.UtcNow
                             };
 
-                            _repository.AddMessage(chat);
+                            if (msg.Content.StartsWith("file:"))
+                            {
+                                var attachment = new Attachment
+                                {
+                                    Sender = msg.Sender,
+                                    Id = Guid.NewGuid(),
+                                    ConversationId = msg.ConversationId,
+                                    Content = msg.Content.Replace("file:", ""),
+                                    Timestamp = DateTime.UtcNow
+                                };
+                                _repository.AddElement(attachment);
+                            }
+                            else
+                            {
+                                _repository.AddMessage(chat);
+                            }
                         }
                     }
                 }
@@ -116,6 +131,23 @@ namespace Suzaku.Chat.Services
             var chatMessage = new ChatJsonMessage
             {
                 Content = content,
+                ConversationId = conversationId,
+                Sender = "User"
+            };
+
+            var mqttMessage = new MqttApplicationMessageBuilder()
+                .WithTopic("suzaku/chat")
+                .WithPayload(JsonSerializer.Serialize(chatMessage))
+                .Build();
+
+            await mqttClient.PublishAsync(mqttMessage);
+        }
+
+        public async Task PublishUserAttachment(string fileName, Guid conversationId)
+        {
+            var chatMessage = new ChatJsonMessage
+            {
+                Content = "file:" + fileName,
                 ConversationId = conversationId,
                 Sender = "User"
             };

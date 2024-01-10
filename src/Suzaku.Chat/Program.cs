@@ -1,3 +1,5 @@
+using BlazorStrap;
+using Microsoft.Extensions.FileProviders;
 using Suzaku.Chat;
 using Suzaku.Chat.Client.Pages;
 using Suzaku.Chat.Components;
@@ -13,11 +15,14 @@ builder.Services
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddBlazorStrap();
+
 builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("Mqtt"));
 builder.Services.Configure<UserConfiguration>(builder.Configuration.GetSection("User"));
 builder.Services.AddSingleton<ChatHistory>();
 builder.Services.AddSingleton<MqttService>();
 builder.Services.AddScoped<ChatCommandService>();
+builder.Services.AddScoped<FileHandler>();
 
 var app = builder.Build();
 
@@ -35,7 +40,15 @@ else
 
 //app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.UseStaticFiles(
+    new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(builder.Environment.ContentRootPath, "uploads")
+        ),
+        RequestPath = "/uploads"
+    }
+);
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()

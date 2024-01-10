@@ -4,6 +4,7 @@ namespace Suzaku.Chat.Models
 {
     [JsonDerivedType(typeof(Message), "message")]
     [JsonDerivedType(typeof(Busy), "busy")]
+    [JsonDerivedType(typeof(Attachment), "attachment")]
     public abstract class Element
     {
         public Guid Id { get; set; }
@@ -19,5 +20,7 @@ namespace Suzaku.Chat.Models
         public required string Sender { get; set; }
     }
 
-    public class Busy : Message { }
+    public class Busy : Message;
+
+    public class Attachment : Message;
 }

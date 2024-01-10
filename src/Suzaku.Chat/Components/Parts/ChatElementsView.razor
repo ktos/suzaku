@@ -12,6 +12,16 @@
 	{
 		<BusyMarker Sender="@busy.Sender"></BusyMarker>
 	}
+	else if (item is Attachment attachment)
+	{
+		var grouped = false;
+		if (prev != null && prev is Attachment prevMsg && prevMsg.Sender == attachment.Sender && (attachment.Timestamp - prevMsg.Timestamp) < TimeSpan.FromMinutes(5))
+		{
+			grouped = true;
+		}
+
+		<ChatAttachment IsGrouped="grouped" IsMine="@FormatIsMine(attachment)" Sender="@attachment.Sender" Timestamp="attachment.Timestamp" Content="@attachment.Content"></ChatAttachment>
+	}
 	else if (item is Message message)
 	{
 		var grouped = false;
@@ -21,7 +31,7 @@
 		}
 
 		<ChatMessage IsGrouped="grouped" IsMine="@FormatIsMine(message)" Sender="@message.Sender" Timestamp="message.Timestamp" Content="@message.Content"></ChatMessage>
-	}	
+	}
 }
 
 @code {

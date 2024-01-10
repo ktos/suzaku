@@ -1,0 +1,51 @@
+﻿@using Suzaku.Chat.Services
+@inject FileHandler FileUploadHandler
+
+<div @ref="fileDropContainer">
+	<InputFile OnChange="@OnChange" multiple class="@HoverClass" @ondragenter="OnDragEnter" @ondragleave="OnDragLeave" @ondragover="OnDragEnter" />
+</div>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+	<div class="alert alert-danger">
+		<p>@ErrorMessage</p>
+	</div>
+}
+
+@foreach (var imageSource in imageSources)
+{
+	<img src="@imageSource" />
+}
+@code {
+	private List<string> imageSources = new();
+	private const int maxAllowedFiles = 2;
+	private string? ErrorMessage;
+	ElementReference fileDropContainer;
+
+	[Parameter] public EventCallback<string> OnSendFile { get; set; }
+
+	async Task OnChange(InputFileChangeEventArgs e)
+	{
+		imageSources.Clear();
+		ErrorMessage = string.Empty;
+		if (e.FileCount > maxAllowedFiles)
+		{
+			ErrorMessage = $"Only {maxAllowedFiles} files can be uploaded.";
+			HoverClass = "form-control bg-danger-subtle";
+			return;
+		}
+
+		foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+		{
+			using var stream = file.OpenReadStream();
+			var newName = await FileUploadHandler.HandleUploadAsync(stream, file.Name);
+
+			await OnSendFile.InvokeAsync(newName);
+			HoverClass = "form-control";
+		}
+	}
+
+	private string HoverClass = "form-control";
+	void OnDragEnter(DragEventArgs e) => HoverClass = "form-control bg-success-subtle";
+	void OnDragLeave(DragEventArgs e) => HoverClass = "form-control";
+}

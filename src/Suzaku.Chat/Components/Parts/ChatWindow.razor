@@ -1,77 +1,89 @@
 ﻿@using Microsoft.JSInterop
 @using Suzaku.Chat.Services
+
 @inject ChatHistory ChatHistory
 @inject MqttService MqttService
 @inject ChatCommandService ChatCommandService
 @inject IJSRuntime JS
 
 <div class="container py-5 vh-100">
-    <div class="row d-flex justify-content-center">
-        <div class="col-md-8 col-lg-6 col-xl-4">
+	<div class="row d-flex justify-content-center">
+		<div class="col-md-8 col-lg-6 col-xl-4">
 
-            <div class="card" style="height: 90vh">
-                <ChatHeader></ChatHeader>
-                <div class="card-body overflow-auto" @ref="listRef">
-                    <ChatElementsView Elements="@elements"></ChatElementsView>
-                </div>
-                <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-                    <ChatInput OnSend="OnSend"></ChatInput>
-                </div>
-            </div>
+			<div class="card" style="height: 90vh">
+				<ChatHeader></ChatHeader>
+				<div class="card-body overflow-auto" @ref="listRef">
+					<ChatElementsView Elements="@elements"></ChatElementsView>
+				</div>
+				<div class="card-footer text-muted ">
+					<BSCollapse DataId="collapse1">
+						<ChatAttachmentUpload OnSendFile="OnSendFile"></ChatAttachmentUpload>
+					</BSCollapse>
 
-        </div>
-    </div>
+					<div class="d-flex justify-content-start align-items-center p-3">
+						<ChatInput OnSend="OnSend"></ChatInput>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
 
 </div>
 
 @code {
-    private IList<Suzaku.Chat.Models.Element> elements = null!;
-    private ElementReference listRef;
-    private Guid conversationId;
+	private IList<Suzaku.Chat.Models.Element> elements = null!;
+	private ElementReference listRef;
+	private Guid conversationId;
 
-    private void ScrollToEnd()
-    {
-        JS.InvokeVoidAsync("scrollToEnd", new object[] { listRef });
-    }
+	private void ScrollToEnd()
+	{
+		JS.InvokeVoidAsync("scrollToEnd", new object[] { listRef });
+	}
 
-    protected override void OnInitialized()
-    {
-        ChatHistory.Notify += OnNotify;
-        elements = ChatHistory.GetAllElements();
-    }
+	protected override void OnInitialized()
+	{
+		ChatHistory.Notify += OnNotify;
+		elements = ChatHistory.GetAllElements();
+	}
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        ScrollToEnd();
-        base.OnAfterRender(firstRender);
-    }
+	protected override void OnAfterRender(bool firstRender)
+	{
+		ScrollToEnd();
+		base.OnAfterRender(firstRender);
+	}
 
-    public async Task OnNotify()
-    {
-        await InvokeAsync(() =>
-        {
-            elements = ChatHistory.GetAllElements();
-            StateHasChanged();
-        });
+	public async Task OnNotify()
+	{
+		await InvokeAsync(() =>
+		{
+			elements = ChatHistory.GetAllElements();
+			StateHasChanged();
+		});
 
-        ScrollToEnd();
-    }
+		ScrollToEnd();
+	}
 
-    public async Task OnSend(string text)
-    {        
-        if (ChatCommandService.IsCommand(text))
-        {
-            var result = ChatCommandService.ParseCommand(text);
-            if (result != null)
-            {
-                ChatHistory.AddElement(result);
-            }
-        }
-        else
-        {
-            await MqttService.PublishUserMessage(text, ChatCommandService.ConversationId);
-        }
-    }
+	public async Task OnSend(string text)
+	{
+		if (ChatCommandService.IsCommand(text))
+		{
+			var result = ChatCommandService.ParseCommand(text);
+			if (result != null)
+			{
+				ChatHistory.AddElement(result);
+			}
+		}
+		else
+		{
+			await MqttService.PublishUserMessage(text, ChatCommandService.ConversationId);
+		}
+	}
 
-    public void Dispose() => ChatHistory.Notify -= OnNotify;
+	public async Task OnSendFile(string fileName)
+	{
+		await MqttService.PublishUserAttachment(fileName, ChatCommandService.ConversationId);
+	}
+
+	public void Dispose() => ChatHistory.Notify -= OnNotify;
 }

@@ -12,6 +12,7 @@
   <ItemGroup>    
     <ProjectReference Include="..\Suzaku.Shared\Suzaku.Shared.csproj" />    
     <ProjectReference Include="..\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj" />    
+    <PackageReference Include="BlazorStrap.V5" Version="5.1.102.51723" />    
     <PackageReference Include="Markdig" Version="0.34.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />    
     <PackageReference Include="MQTTnet" Version="4.3.3.952" />
