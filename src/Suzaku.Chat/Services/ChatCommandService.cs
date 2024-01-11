@@ -65,7 +65,7 @@ namespace Suzaku.Chat.Services
                 }
                 else
                 {
-                    return new Error { Content = "Attaching failed." };
+                    return new Error { Content = $"Attaching failed (param: {param})" };
                 }
 
                 //return new Message

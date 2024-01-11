@@ -17,6 +17,15 @@
         function scrollToEnd(item) {
             item.scrollTop = item.scrollHeight;
         }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function () {
+                alert("Copied to clipboard!");
+            })
+                .catch(function (error) {
+                    alert(error);
+                });
+        }
     </script>
     <HeadOutlet />
 </head>

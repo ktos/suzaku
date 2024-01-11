@@ -24,8 +24,16 @@
 			<img src="@($"/avatars/{Sender.ToLower()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">
 		}
 		<div>
-			<div class="small ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
-				<p><i class="ti ti-paperclip"></i> <a href="/uploads/@Content">@Content</a></p>
+			<div class="ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
+				<p>
+					<a class="small" href="/uploads/@Content">
+						@Content
+						@GeneratePreview()
+					</a>
+				</p>
+				<p class="fs-2 text-end">
+					<i class="ti ti-paperclip" onclick="copyToClipboard('@Content')"></i>
+				</p>
 			</div>
 		</div>
 	</div>
@@ -50,11 +58,13 @@ else
 		<div>
 			<div class="p-2 pt-0 pb-0 me-3 text-white rounded-3 bg-warning">
 				<p>
-					<i class="ti ti-paperclip" onclick="copyToClipboard('@Content')"></i> 
 					<a class="small" href="/uploads/@Content">
 						@Content
 						@GeneratePreview()
 					</a>
+				</p>
+				<p class="fs-2 text-end">
+					<i class="ti ti-paperclip" onclick="copyToClipboard('@Content')"></i>
 				</p>
 			</div>
 		</div>
