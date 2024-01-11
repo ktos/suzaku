@@ -39,7 +39,7 @@
 		{
 			try
 			{
-				using var stream = file.OpenReadStream(maxAllowedSize: 2048000);
+				using var stream = file.OpenReadStream(maxAllowedSize: 204800000);
 				var newName = await FileUploadHandler.HandleUploadAsync(stream, file.Name);
 
 				await OnSendFile.InvokeAsync(newName);

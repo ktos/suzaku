@@ -83,6 +83,11 @@ else
 			return new MarkupString("<img src='/uploads/" + Content + "' alt='' style='max-width: 150px'>");
 		}
 
+		if (Content.ToLower().EndsWith(".m4a") || Content.ToLower().EndsWith(".mp3"))
+		{
+			return new MarkupString("<audio src='/uploads/" + Content + "' alt='' controls>");
+		}
+
 		return new MarkupString(string.Empty);
 	}
 }
