@@ -44,7 +44,8 @@ app.UseStaticFiles(
         FileProvider = new PhysicalFileProvider(
             Path.Combine(builder.Environment.ContentRootPath, "uploads")
         ),
-        RequestPath = "/uploads"
+        RequestPath = "/uploads",
+        ServeUnknownFileTypes = true
     }
 );
 app.UseAntiforgery();
