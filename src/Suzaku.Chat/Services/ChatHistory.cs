@@ -40,17 +40,9 @@ namespace Suzaku.Chat.Services
             CurrentChannel = _channels.First(x => x.Name is null);
         }
 
-        public void SetChannelAsCurrent(string name)
+        public void SetChannelAsCurrent(string? name)
         {
-            var channel = _channels.FirstOrDefault(x => x.Name == name);
-            if (channel != null)
-            {
-                CurrentChannel = channel;
-            }
-            else
-            {
-                CurrentChannel = CreateNewChannel(name);
-            }
+            CurrentChannel = FindByName(name);
         }
 
         private ChatChannel CreateNewChannel(string name)
