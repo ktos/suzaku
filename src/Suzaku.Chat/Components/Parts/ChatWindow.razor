@@ -16,26 +16,7 @@
 				<div class="card-header"
 					 style="border-top: 4px solid #ffa900;">
 					<div class="d-flex justify-content-between align-items-center">
-						<div class="dropdown">
-							<button class="btn btn-outline-secondary dropdown-toggle btn-lg" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-								@displayedChatName
-							</button>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="/">@Options.Value.DefaultChannelName</a></li>
-								@foreach (var item in Options.Value.AlwaysDisplayed)
-								{
-									<li><a class="dropdown-item" href="/chat/@item.Name">@item.DisplayName</a></li>
-								}
-								@if (Options.Value.DisplayFromHistory)
-								{
-									@foreach (var item in ChatHistory.GetChannels())
-									{
-										<li><a class="dropdown-item" href="/chat/@item.Name">@item.DisplayName</a></li>
-									}
-								}
-								<li><span class="dropdown-item"><form @onsubmit="NewChatEntered"><InputText class="form-control" @bind-Value="newChat"></InputText></form></span></li>
-							</ul>
-						</div>
+						<ChannelSwitcher></ChannelSwitcher>
 						<div class="d-flex flex-row align-items-center">
 							<button class="btn btn-primary m-1" data-bs-target="#collapse1" data-bs-toggle="collapse"><i class="ti ti-paperclip"></i></button>
 						</div>
@@ -59,25 +40,19 @@
 
 @code {
 	private ElementReference listRef;
-	private string? newChat;
+
 	private List<Element> displayedElements = null!;
 
-	private string displayedChatName = "Suzaku";
 
 	private void ScrollToEnd()
 	{
 		JS.InvokeVoidAsync("scrollToEnd", new object[] { listRef });
 	}
 
-	private void NewChatEntered()
-	{
-		NavigationManager.NavigateTo($"/chat/{newChat}");
-	}
-
 	protected override void OnInitialized()
 	{
-		ChatHistory.Notify += OnNotify;
-		displayedChatName = ChatHistory.CurrentChannel.DisplayName;
+		ChatHistory.ChannelHistoryUpdated += OnChannelHistoryUpdated;
+
 		displayedElements = ChatHistory.GetCurrentChannelElements();
 	}
 
@@ -87,7 +62,7 @@
 		base.OnAfterRender(firstRender);
 	}
 
-	public async Task OnNotify()
+	public async Task OnChannelHistoryUpdated()
 	{
 		await InvokeAsync(() =>
 		{
@@ -119,5 +94,5 @@
 		await MqttService.PublishUserAttachment(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 	}
 
-	public void Dispose() => ChatHistory.Notify -= OnNotify;
+	public void Dispose() => ChatHistory.ChannelHistoryUpdated -= OnChannelHistoryUpdated;
 }

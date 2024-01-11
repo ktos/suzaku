@@ -15,11 +15,13 @@ namespace Suzaku.Chat.Services
 		public ChatChannel CurrentChannel
 		{
 			get { return _currentChannel; }
-			private set { _currentChannel = value; Notify?.Invoke(); }
+			private set { _currentChannel = value; ChannelHistoryUpdated?.Invoke(); }
 		}
 
+		public ChatChannel DefaultChannel => _channels.First(x => x.Name is null);
 
-		public event Func<Task>? Notify;
+		public event Func<Task>? ChannelHistoryUpdated;
+		public event Func<Task>? ChannelRenamed;
 
 		public ChatHistory(IOptions<ChannelConfiguration> configuration)
 		{
@@ -83,7 +85,7 @@ namespace Suzaku.Chat.Services
 		{
 			var c = FindByName(channelName);
 			c.History.Add(element);
-			Notify?.Invoke();
+			ChannelHistoryUpdated?.Invoke();
 			SaveHistory();
 		}
 
@@ -91,7 +93,7 @@ namespace Suzaku.Chat.Services
 		{
 			var c = FindByName(channelName);
 			c.History.Add(message);
-			Notify?.Invoke();
+			ChannelHistoryUpdated?.Invoke();
 			SaveHistory();
 		}
 
@@ -115,7 +117,7 @@ namespace Suzaku.Chat.Services
 				c.History.Add(chat);
 			}
 
-			Notify?.Invoke();
+			ChannelHistoryUpdated?.Invoke();
 			SaveHistory();
 		}
 
@@ -129,7 +131,14 @@ namespace Suzaku.Chat.Services
 				c.History.Remove(last);
 			}
 
-			Notify?.Invoke();
+			ChannelHistoryUpdated?.Invoke();
+			SaveHistory();
+		}
+
+		public void UpdatedByCommand()
+		{
+			ChannelHistoryUpdated?.Invoke();
+			ChannelRenamed?.Invoke();
 			SaveHistory();
 		}
 

@@ -1,0 +1,90 @@
+﻿@using Suzaku.Chat.Models
+@using Suzaku.Chat.Services
+@inject ChatHistory ChatHistory
+@inject NavigationManager NavigationManager
+@inject Microsoft.Extensions.Options.IOptions<ChannelConfiguration> Options
+
+<div class="dropdown">
+	<button class="btn btn-outline-secondary dropdown-toggle btn-lg" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+		@displayedChatName
+	</button>
+	<ul class="dropdown-menu">
+		<li><a class="dropdown-item" href="/">@defaultChannelName</a></li>
+
+		@foreach (var item in displayedChannelList)
+		{
+			<li><a class="dropdown-item" href="/chat/@item.Name">@item.DisplayName (#@item.Name)</a></li>
+		}
+
+		<li><span class="dropdown-item"><form @onsubmit="NewChatEntered"><InputText class="form-control" @bind-Value="newChat"></InputText></form></span></li>
+	</ul>
+</div>
+
+@code {
+	private string? newChat;
+	private List<ChatChannelConfiguration> displayedChannelList = new();
+
+	private string displayedChatName = "Suzaku";
+	private string defaultChannelName = string.Empty;
+
+	private void NewChatEntered()
+	{
+		NavigationManager.NavigateTo($"/chat/{newChat}");
+	}
+
+	private void UpdateChannelList()
+	{
+		var currentChannels = ChatHistory.GetChannels();
+		displayedChannelList = new();
+
+		// first display all in the list, but use their names from history if known
+		foreach (var item in Options.Value.AlwaysDisplayed)
+		{
+			var exists = currentChannels.FirstOrDefault(x => x.Name == item.Name);
+
+			if (exists is not null)
+			{
+				displayedChannelList.Add(new() { DisplayName = exists.DisplayName, Name = exists.Name! });
+			}
+			else
+			{
+				displayedChannelList.Add(item);
+			}
+		}
+
+		// then add rest from history if needed
+		if (Options.Value.DisplayFromHistory)
+		{
+			foreach (var item in currentChannels)
+			{
+				if (!displayedChannelList.Any(x => x.Name == item.Name))
+				{
+					displayedChannelList.Add(new() { DisplayName = item.DisplayName, Name = item.Name! });
+				}
+			}
+		}
+	}
+
+	public async Task OnChannelRenamed()
+	{
+		await InvokeAsync(() =>
+		{
+			displayedChatName = ChatHistory.CurrentChannel.DisplayName;
+			defaultChannelName = ChatHistory.DefaultChannel.DisplayName;
+			UpdateChannelList();
+			StateHasChanged();
+		});
+	}
+
+	protected override void OnInitialized()
+	{
+		ChatHistory.ChannelRenamed += OnChannelRenamed;
+		displayedChatName = ChatHistory.CurrentChannel.DisplayName;
+		defaultChannelName = ChatHistory.DefaultChannel.DisplayName;
+		UpdateChannelList();
+
+		base.OnInitialized();
+	}
+
+	public void Dispose() => ChatHistory.ChannelRenamed -= OnChannelRenamed;
+}

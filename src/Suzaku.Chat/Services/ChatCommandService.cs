@@ -13,7 +13,7 @@ namespace Suzaku.Chat.Services
 
         public bool IsCommand(string message)
         {
-            if (new string[] { "/new", "/busy" }.Contains(message))
+            if (message == "/new" || message == "/busy" || message.StartsWith("/rename"))
             {
                 return true;
             }
@@ -28,10 +28,15 @@ namespace Suzaku.Chat.Services
                 _chatHistory.CurrentChannel.CurrentConversationId = Guid.NewGuid();
                 return new NewConversationMarker { Timestamp = DateTime.UtcNow };
             }
-
-            if (command == "/busy")
+            else if (command == "/busy")
             {
                 return new Busy { Sender = "User", Timestamp = DateTime.UtcNow };
+            }
+            else if (command.StartsWith("/rename "))
+            {
+                string newName = command.Substring("/rename ".Length);
+                _chatHistory.CurrentChannel.DisplayName = newName;
+                _chatHistory.UpdatedByCommand();
             }
 
             return null;
