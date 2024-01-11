@@ -37,10 +37,18 @@
 
 		foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
 		{
-			using var stream = file.OpenReadStream();
-			var newName = await FileUploadHandler.HandleUploadAsync(stream, file.Name);
+			try
+			{
+				using var stream = file.OpenReadStream();
+				var newName = await FileUploadHandler.HandleUploadAsync(stream, file.Name);
 
-			await OnSendFile.InvokeAsync(newName);
+				await OnSendFile.InvokeAsync(newName);
+			}
+			catch (IOException)
+			{
+				ErrorMessage = $"Something went wrong with upload, check file size?";
+			}
+
 			HoverClass = "form-control";
 		}
 	}
