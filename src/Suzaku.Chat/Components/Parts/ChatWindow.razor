@@ -1,4 +1,5 @@
-﻿@using Microsoft.JSInterop
+﻿@using Microsoft.Extensions.Options
+@using Microsoft.JSInterop
 @using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
 @inject ChatHistory ChatHistory
@@ -6,6 +7,7 @@
 @inject ChatCommandService ChatCommandService
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
+@inject IOptions<ChannelConfiguration> Options
 
 <div class="container py-5 vh-100">
 	<div class="row d-flex justify-content-center">
@@ -19,10 +21,17 @@
 								@displayedChatName
 							</button>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="/">Default</a></li>
-								@foreach (var item in ChatHistory.GetChannels())
+								<li><a class="dropdown-item" href="/">@Options.Value.DefaultChannelName</a></li>
+								@foreach (var item in Options.Value.AlwaysDisplayed)
 								{
 									<li><a class="dropdown-item" href="/chat/@item.Name">@item.DisplayName</a></li>
+								}
+								@if (Options.Value.DisplayFromHistory)
+								{
+									@foreach (var item in ChatHistory.GetChannels())
+									{
+										<li><a class="dropdown-item" href="/chat/@item.Name">@item.DisplayName</a></li>
+									}
 								}
 								<li><span class="dropdown-item"><form @onsubmit="NewChatEntered"><InputText class="form-control" @bind-Value="newChat"></InputText></form></span></li>
 							</ul>

@@ -16,6 +16,7 @@ builder.Services
 
 builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("Mqtt"));
 builder.Services.Configure<UserConfiguration>(builder.Configuration.GetSection("User"));
+builder.Services.Configure<ChannelConfiguration>(builder.Configuration.GetSection("Channels"));
 builder.Services.AddSingleton<ChatHistory>();
 builder.Services.AddSingleton<MqttService>();
 builder.Services.AddScoped<ChatCommandService>();
