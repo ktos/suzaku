@@ -1,4 +1,5 @@
 ﻿@using Microsoft.JSInterop
+@using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
 @inject ChatHistory ChatHistory
 @inject MqttService MqttService
@@ -15,13 +16,13 @@
 					<div class="d-flex justify-content-between align-items-center">
 						<div class="dropdown">
 							<button class="btn btn-outline-secondary dropdown-toggle btn-lg" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-								@chatName
+								@displayedChatName
 							</button>
 							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="/">Group chat</a></li>
-								@foreach (var item in ChatHistory.GetAllChatNames().Where(x => x is not null))
+								<li><a class="dropdown-item" href="/">Default</a></li>
+								@foreach (var item in ChatHistory.GetChannels())
 								{
-									<li><a class="dropdown-item" href="/@item.ToLower()">@item</a></li>
+									<li><a class="dropdown-item" href="/chat/@item.Name">@item.DisplayName</a></li>
 								}
 								<li><span class="dropdown-item"><form @onsubmit="NewChatEntered"><InputText class="form-control" @bind-Value="newChat"></InputText></form></span></li>
 							</ul>
@@ -35,7 +36,7 @@
 					</div>
 				</div>
 				<div class="card-body overflow-auto" @ref="listRef">
-					<ChatElementsView Elements="@elements"></ChatElementsView>
+					<ChatElementsView Elements="displayedElements"></ChatElementsView>
 				</div>
 				<div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
 					<ChatInput OnSend="OnSend"></ChatInput>
@@ -48,11 +49,11 @@
 </div>
 
 @code {
-	[Parameter] public string? ChatName { get; set; }
-	private IList<Suzaku.Chat.Models.Element> elements = null!;
 	private ElementReference listRef;
 	private string? newChat;
-	private string chatName = "Suzaku";
+	private List<Element> displayedElements = null!;
+
+	private string displayedChatName = "Suzaku";
 
 	private void ScrollToEnd()
 	{
@@ -67,12 +68,8 @@
 	protected override void OnInitialized()
 	{
 		ChatHistory.Notify += OnNotify;
-		elements = ChatHistory.GetAllElements(ChatName);
-
-		if (ChatName != null)
-		{
-			chatName = $"Suzaku (@{ChatName})";
-		}
+		displayedChatName = ChatHistory.CurrentChannel.DisplayName;
+		displayedElements = ChatHistory.GetCurrentChannelElements();
 	}
 
 	protected override void OnAfterRender(bool firstRender)
@@ -85,7 +82,7 @@
 	{
 		await InvokeAsync(() =>
 		{
-			elements = ChatHistory.GetAllElements(ChatName);
+			displayedElements = ChatHistory.GetCurrentChannelElements();
 			StateHasChanged();
 		});
 
@@ -99,18 +96,18 @@
 			var result = ChatCommandService.ParseCommand(text);
 			if (result != null)
 			{
-				ChatHistory.AddElement(result);
+				ChatHistory.AddElement(result, ChatHistory.CurrentChannel.Name);
 			}
 		}
 		else
 		{
-			await MqttService.PublishUserMessage(text, ChatCommandService.ConversationId, ChatName);
+			await MqttService.PublishUserMessage(text, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 		}
 	}
 
 	public async Task OnSendFile(string fileName)
 	{
-		await MqttService.PublishUserAttachment(fileName, ChatCommandService.ConversationId, ChatName);
+		await MqttService.PublishUserAttachment(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 	}
 
 	public void Dispose() => ChatHistory.Notify -= OnNotify;

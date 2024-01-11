@@ -10,7 +10,6 @@ namespace Suzaku.Chat.Models
     {
         public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
-        public string? ChatName { get; set; }
     }
 
     public class NewConversationMarker : Element;

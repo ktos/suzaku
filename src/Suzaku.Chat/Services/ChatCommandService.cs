@@ -4,11 +4,11 @@ namespace Suzaku.Chat.Services
 {
     public class ChatCommandService
     {
-        public Guid ConversationId { get; private set; }
+        private readonly ChatHistory _chatHistory;
 
-        public ChatCommandService()
+        public ChatCommandService(ChatHistory chatHistory)
         {
-            ConversationId = Guid.NewGuid();
+            _chatHistory = chatHistory;
         }
 
         public bool IsCommand(string message)
@@ -25,7 +25,7 @@ namespace Suzaku.Chat.Services
         {
             if (command == "/new")
             {
-                ConversationId = Guid.NewGuid();
+                _chatHistory.CurrentChannel.CurrentConversationId = Guid.NewGuid();
                 return new NewConversationMarker { Timestamp = DateTime.UtcNow };
             }
 

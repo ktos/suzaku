@@ -3,88 +3,132 @@ using System.Text.Json;
 
 namespace Suzaku.Chat.Services
 {
-	public class ChatHistory
-	{
-		private const string HISTORY_FILE_PATH = "history.json";
-		private List<Element> _chatHistory;
-		public event Func<Task>? Notify;
+    public class ChatHistory
+    {
+        private const string HISTORY_FILE_PATH = "history.json";
 
-		public ChatHistory()
-		{
-			_chatHistory = [];
+        private List<ChatChannel> _channels;
 
-			if (File.Exists(HISTORY_FILE_PATH))
-			{
-				var history = JsonSerializer.Deserialize<IEnumerable<Element>>(File.ReadAllText(HISTORY_FILE_PATH));
-				if (history != null)
-				{
-					foreach (var item in history)
-					{
-						_chatHistory.Add(item);
-					}
-					Notify?.Invoke();
-				}
-			}
-		}
+        private ChatChannel _currentChannel;
 
-		public void AddElement(Element element)
-		{
-			_chatHistory.Add(element);
-			Notify?.Invoke();
-			SaveHistory();
-		}
+        public ChatChannel CurrentChannel
+        {
+            get { return _currentChannel; }
+            private set { _currentChannel = value; Notify?.Invoke(); }
+        }
 
-		public void AddMessage(Message message)
-		{
-			_chatHistory.Add(message);
-			Notify?.Invoke();
-			SaveHistory();
-		}
 
-		public List<Element> GetAllElements(string? chatName = null)
-		{
-			if (chatName == null)
-			{
-				return _chatHistory.Where(x => x.ChatName is null).ToList();
-			}
-			else
-			{
-				return _chatHistory.Where(x => x.ChatName == chatName).ToList();
-			}
-		}
+        public event Func<Task>? Notify;
 
-		public List<string?> GetAllChatNames()
-		{
-			return _chatHistory.Select(x => x.ChatName).Distinct().ToList();
-		}
+        public ChatHistory()
+        {
+            _channels = [];
 
-		public void AddBusyMessage(Busy chat)
-		{
-			var last = _chatHistory.Where(x => x is Busy busy && busy.Sender == chat.Sender).FirstOrDefault();
-			if (last == null)
-			{
-				_chatHistory.Add(chat);
-			}
+            if (File.Exists(HISTORY_FILE_PATH))
+            {
+                _channels = JsonSerializer.Deserialize<List<ChatChannel>>(File.ReadAllText(HISTORY_FILE_PATH)) ?? [];
+            }
 
-			Notify?.Invoke();
-			SaveHistory();
-		}
+            if (_channels is [])
+                _channels.Add(new ChatChannel { Name = null, DisplayName = "Default", CurrentConversationId = Guid.NewGuid(), History = new List<Element>() });
 
-		public void RemoveBusyMessagesForSender(string sender)
-		{
-			var last = _chatHistory.Where(x => x is Busy busy && busy.Sender == sender).FirstOrDefault();
-			if (last != null)
-			{
-				_chatHistory.Remove(last);
-			}
+            _currentChannel = _channels.First();
+        }
 
-			Notify?.Invoke();
-			SaveHistory();
-		}
+        public void SetDefaultChannelAsCurrent()
+        {
+            CurrentChannel = _channels.First(x => x.Name is null);
+        }
 
-		private void SaveHistory()
-		{
-			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_chatHistory));
-		}
-	}
+        public void SetChannelAsCurrent(string name)
+        {
+            var channel = _channels.FirstOrDefault(x => x.Name == name);
+            if (channel != null)
+            {
+                CurrentChannel = channel;
+            }
+            else
+            {
+                CurrentChannel = CreateNewChannel(name);
+            }
+        }
+
+        private ChatChannel CreateNewChannel(string name)
+        {
+            var newch = new ChatChannel { Name = name.ToLower(), DisplayName = name, CurrentConversationId = Guid.NewGuid(), History = new List<Element>() };
+            _channels.Add(newch);
+            return newch;
+        }
+
+        private ChatChannel FindByName(string? channelName)
+        {
+            // channel name is null for a default channel (group chat with all bots)
+            if (channelName == null)
+            {
+                return _channels.First(x => x.Name is null);
+            }
+
+            var found = _channels.FirstOrDefault(x => x.Name == channelName);
+            return found ?? CreateNewChannel(channelName);
+        }
+
+        public void AddElement(Element element, string? channelName)
+        {
+            var c = FindByName(channelName);
+            c.History.Add(element);
+            Notify?.Invoke();
+            SaveHistory();
+        }
+
+        public void AddMessage(Message message, string? channelName)
+        {
+            var c = FindByName(channelName);
+            c.History.Add(message);
+            Notify?.Invoke();
+            SaveHistory();
+        }
+
+        public List<Element> GetCurrentChannelElements()
+        {
+            return _currentChannel.History.ToList();
+        }
+
+        public List<ChatChannel> GetChannels()
+        {
+            return _channels.Where(x => x.Name is not null).ToList();
+        }
+
+        public void AddBusyMessage(Busy chat, string? channelName)
+        {
+            var c = FindByName(channelName);
+
+            var last = c.History.Where(x => x is Busy busy && busy.Sender == chat.Sender).FirstOrDefault();
+            if (last == null)
+            {
+                c.History.Add(chat);
+            }
+
+            Notify?.Invoke();
+            SaveHistory();
+        }
+
+        public void RemoveBusyMessagesForSender(string sender, string? channelName)
+        {
+            var c = FindByName(channelName);
+
+            var last = c.History.Where(x => x is Busy busy && busy.Sender == sender).FirstOrDefault();
+            if (last != null)
+            {
+                c.History.Remove(last);
+            }
+
+            Notify?.Invoke();
+            SaveHistory();
+        }
+
+        private void SaveHistory()
+        {
+            File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_channels));
+        }
+    }
 }
