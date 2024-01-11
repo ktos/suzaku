@@ -21,6 +21,7 @@ builder.Services.AddSingleton<ChatHistory>();
 builder.Services.AddSingleton<MqttService>();
 builder.Services.AddScoped<ChatCommandService>();
 builder.Services.AddScoped<FileHandler>();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

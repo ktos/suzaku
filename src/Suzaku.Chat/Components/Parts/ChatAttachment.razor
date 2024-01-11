@@ -48,10 +48,10 @@ else
 	}
 	<div class="d-flex flex-row justify-content-end pt-1" style="@(IsGrouped ? "margin-top: -1.2rem; margin-right: 55px" : "")">
 		<div>
-			<div class="small p-2 pt-0 pb-0 me-3 text-white rounded-3 bg-warning">
+			<div class="p-2 pt-0 pb-0 me-3 text-white rounded-3 bg-warning">
 				<p>
 					<i class="ti ti-paperclip"></i> 
-					<a href="/uploads/@Content">
+					<a class="small" href="/uploads/@Content">
 						@Content
 						@GeneratePreview()
 					</a>
@@ -80,12 +80,12 @@ else
 
 		if (Content.ToLower().EndsWith(".jpg") || Content.ToLower().EndsWith(".gif") || Content.ToLower().EndsWith(".png") || Content.ToLower().EndsWith(".jpg") || Content.ToLower().EndsWith(".svg"))
 		{
-			return new MarkupString("<img src='/uploads/" + Content + "' alt='' style='max-width: 150px'>");
+			return new MarkupString("<br /><img src='/uploads/" + Content + "' alt='' style='max-width: 150px'>");
 		}
 
 		if (Content.ToLower().EndsWith(".m4a") || Content.ToLower().EndsWith(".mp3"))
 		{
-			return new MarkupString("<audio src='/uploads/" + Content + "' alt='' controls>");
+			return new MarkupString("<br /><audio src='/uploads/" + Content + "' alt='' controls>");
 		}
 
 		return new MarkupString(string.Empty);

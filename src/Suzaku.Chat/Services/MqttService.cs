@@ -165,7 +165,7 @@ namespace Suzaku.Chat.Services
             await mqttClient.PublishAsync(mqttMessage);
         }
 
-        public async Task PublishUserAttachment(
+        public async Task PublishUserAttachmentAsync(
             string fileName,
             Guid conversationId,
             string? chatName

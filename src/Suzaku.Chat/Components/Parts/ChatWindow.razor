@@ -22,14 +22,14 @@
 						</div>
 					</div>
 					<div class="collapse" id="collapse1">
-						<ChatAttachmentUpload OnSendFile="OnSendFile"></ChatAttachmentUpload>
+						<ChatAttachmentUpload OnSendFile="OnSendFileAsync"></ChatAttachmentUpload>
 					</div>
 				</div>
 				<div class="card-body overflow-auto" @ref="listRef">
 					<ChatElementsView Elements="displayedElements"></ChatElementsView>
 				</div>
 				<div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-					<ChatInput OnSend="OnSend"></ChatInput>
+					<ChatInput OnSend="OnSendAsync"></ChatInput>
 				</div>
 			</div>
 
@@ -73,11 +73,11 @@
 		ScrollToEnd();
 	}
 
-	public async Task OnSend(string text)
+	public async Task OnSendAsync(string text)
 	{
 		if (ChatCommandService.IsCommand(text))
 		{
-			var result = ChatCommandService.ParseCommand(text);
+			var result = await ChatCommandService.ParseCommandAsync(text);
 			if (result != null)
 			{
 				ChatHistory.AddElement(result, ChatHistory.CurrentChannel.Name);
@@ -89,9 +89,9 @@
 		}
 	}
 
-	public async Task OnSendFile(string fileName)
+	public async Task OnSendFileAsync(string fileName)
 	{
-		await MqttService.PublishUserAttachment(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
+		await MqttService.PublishUserAttachmentAsync(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 	}
 
 	public void Dispose() => ChatHistory.ChannelHistoryUpdated -= OnChannelHistoryUpdated;

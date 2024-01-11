@@ -3,7 +3,7 @@
 @using Suzaku.Chat.Models
 @inject IOptions<UserConfiguration> UserConfig
 
-@for(int i = 0; i < Elements.Count; i++)
+@for (int i = 0; i < Elements.Count; i++)
 {
 	var item = Elements[i];
 	var prev = i > 0 ? Elements[i - 1] : null;
@@ -15,6 +15,13 @@
 	else if (item is NewConversationMarker marker)
 	{
 		<hr title="New conversation started" />
+	}
+	else if (item is Error error)
+	{
+		<div class="alert alert-danger">
+			@error.Content
+		</div>
+
 	}
 	else if (item is Attachment attachment)
 	{
