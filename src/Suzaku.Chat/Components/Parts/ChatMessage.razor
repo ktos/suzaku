@@ -7,7 +7,7 @@
 	if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			<p class="small mb-1 fw-bold">@Sender.FirstCharToUpper()</p>
+			<p class="small mb-1 fw-bold"><a class="text-black text-decoration-none" href="/chat/@Sender.ToLower()">@Sender.FirstCharToUpper()</a></p>
 			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
 			{
 				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
