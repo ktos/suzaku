@@ -32,12 +32,25 @@
 	else if (item is Attachment attachment)
 	{
 		var grouped = false;
-		if (prev != null && prev is Attachment prevMsg && prevMsg.Sender == attachment.Sender && (attachment.Timestamp - prevMsg.Timestamp) < TimeSpan.FromMinutes(5))
+		if (prev != null && prev is Message prevMsg && prevMsg.Sender == attachment.Sender && (attachment.Timestamp - prevMsg.Timestamp) < TimeSpan.FromMinutes(5))
 		{
 			grouped = true;
 		}
 
 		<ChatAttachment IsGrouped="grouped" IsMine="@FormatIsMine(attachment)" Sender="@attachment.Sender" Timestamp="attachment.Timestamp" Content="@attachment.Content"></ChatAttachment>
+	}
+	else if (item is CannedResponses canned)
+	{
+		if (!canned.IsInteracted)
+		{
+			var grouped = false;
+			if (prev != null && prev is Message prevMsg && prevMsg.Sender == canned.Sender && (canned.Timestamp - prevMsg.Timestamp) < TimeSpan.FromMinutes(5))
+			{
+				grouped = true;
+			}
+
+			<CannedResponsesView IsGrouped="grouped" Element="@canned"></CannedResponsesView>
+		}
 	}
 	else if (item is Message message)
 	{

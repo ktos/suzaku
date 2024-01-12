@@ -3,7 +3,6 @@ using MQTTnet;
 using MQTTnet.Client;
 using Suzaku.Chat.Models;
 using Suzaku.Shared;
-using System.Reflection;
 using System.Text.Json;
 
 namespace Suzaku.Chat.Services
@@ -91,18 +90,36 @@ namespace Suzaku.Chat.Services
                         var msg = JsonSerializer.Deserialize<ChatJsonMessage>(content);
                         if (msg != null)
                         {
-                            if (msg.Content.StartsWith("file:"))
+                            if (msg.Content.StartsWith(ChatJsonMessage.ATTACHMENT))
                             {
                                 var attachment = new Attachment
                                 {
                                     Sender = msg.Sender,
                                     Id = Guid.NewGuid(),
                                     ConversationId = msg.ConversationId,
-                                    Content = msg.Content.Replace("file:", ""),
+                                    Content = msg.Content.Replace(ChatJsonMessage.ATTACHMENT, ""),
                                     Timestamp = DateTime.UtcNow
                                 };
 
                                 _repository.AddElement(attachment, channelName);
+                            }
+                            else if (msg.Content.StartsWith(ChatJsonMessage.CANNED))
+                            {
+                                var canned = new CannedResponses
+                                {
+                                    Sender = msg.Sender,
+                                    Id = Guid.NewGuid(),
+                                    Timestamp = DateTime.UtcNow,
+                                    ConversationId = msg.ConversationId,
+                                    Content = msg.Content.Replace(ChatJsonMessage.CANNED, ""),
+                                    IsInteracted = false,
+                                    Responses = msg.Content
+                                        .Replace(ChatJsonMessage.CANNED, "")
+                                        .Split(';')
+                                        .ToList()
+                                };
+
+                                _repository.AddElement(canned, channelName);
                             }
                             else
                             {
@@ -167,6 +184,15 @@ namespace Suzaku.Chat.Services
                 .Build();
 
             await mqttClient.PublishAsync(mqttMessage);
+        }
+
+        public Task PublishUserMessageAsync(string content)
+        {
+            return PublishUserMessageAsync(
+                content,
+                _repository.CurrentChannel.CurrentConversationId,
+                _repository.CurrentChannel.Name
+            );
         }
 
         public async Task PublishUserAttachmentAsync(

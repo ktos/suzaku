@@ -17,6 +17,9 @@ namespace Suzaku.Shared
 
         [JsonPropertyName("content")]
         public required string Content { get; set; }
+
+        public const string ATTACHMENT = "file:";
+        public const string CANNED = "canned:";
     }
 
     public class SystemJsonMessage

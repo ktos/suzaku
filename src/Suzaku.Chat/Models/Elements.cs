@@ -8,6 +8,7 @@ namespace Suzaku.Chat.Models
     [JsonDerivedType(typeof(NewConversationMarker), "new-conv")]
     [JsonDerivedType(typeof(Error), "error")]
     [JsonDerivedType(typeof(Info), "info")]
+    [JsonDerivedType(typeof(CannedResponses), "canned")]
     public abstract class Element
     {
         public Guid Id { get; set; }
@@ -38,4 +39,10 @@ namespace Suzaku.Chat.Models
     public class Busy : Message;
 
     public class Attachment : Message;
+
+    public class CannedResponses : Message
+    {
+        public List<string> Responses { get; set; } = [];
+        public bool IsInteracted { get; set; }
+    }
 }
