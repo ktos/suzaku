@@ -82,14 +82,6 @@ namespace Suzaku.Chat.Services
 
                             if (msg.Content == SystemJsonMessage.NEW_CONVERSATION)
                             {
-                                _repository.AddElement(
-                                    new NewConversationMarker
-                                    {
-                                        Id = Guid.NewGuid(),
-                                        Timestamp = DateTime.UtcNow
-                                    },
-                                    channelName
-                                );
                                 _repository.NewConversationForChannel(channelName);
                             }
                         }

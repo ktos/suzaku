@@ -92,9 +92,14 @@ namespace Suzaku.Chat.Services
 		public void AddMessage(Message message, string? channelName)
 		{
 			var c = FindByName(channelName);
-			c.History.Add(message);
-			ChannelHistoryUpdated?.Invoke();
-			SaveHistory();
+			if (message.ConversationId is not null && message.ConversationId != c.CurrentConversationId)
+			{
+				c.CurrentConversationId = message.ConversationId.Value;
+
+
+			}
+
+			AddElement(message, channelName);
 		}
 
 		public List<Element> GetCurrentChannelElements()
@@ -147,10 +152,18 @@ namespace Suzaku.Chat.Services
 			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_channels));
 		}
 
-		public void NewConversationForChannel(string? channelName)
+		public void NewConversationForChannel(string? channelName, Guid? guid = null)
 		{
 			var ch = FindByName(channelName);
-			ch.CurrentConversationId = Guid.NewGuid();
+			ch.CurrentConversationId = guid ?? Guid.NewGuid();
+
+			var marker = new NewConversationMarker
+			{
+				Id = Guid.NewGuid(),
+				Timestamp = DateTime.UtcNow
+			};
+
+			AddElement(marker, channelName);
 		}
 	}
 }
