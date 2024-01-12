@@ -146,5 +146,11 @@ namespace Suzaku.Chat.Services
 		{
 			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_channels));
 		}
+
+		public void NewConversationForChannel(string? channelName)
+		{
+			var ch = FindByName(channelName);
+			ch.CurrentConversationId = Guid.NewGuid();
+		}
 	}
 }

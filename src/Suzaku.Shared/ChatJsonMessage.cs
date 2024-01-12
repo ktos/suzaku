@@ -32,5 +32,6 @@ namespace Suzaku.Shared
 
         public const string BUSY = "BUSY";
         public const string NOT_BUSY = "NOT_BUSY";
+        public const string NEW_CONVERSATION = "NEWCONV";
     }
 }

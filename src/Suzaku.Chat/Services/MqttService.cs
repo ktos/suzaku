@@ -79,6 +79,19 @@ namespace Suzaku.Chat.Services
                             {
                                 _repository.RemoveBusyMessagesForSender(msg.Sender, channelName);
                             }
+
+                            if (msg.Content == SystemJsonMessage.NEW_CONVERSATION)
+                            {
+                                _repository.AddElement(
+                                    new NewConversationMarker
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        Timestamp = DateTime.UtcNow
+                                    },
+                                    channelName
+                                );
+                                _repository.NewConversationForChannel(channelName);
+                            }
                         }
                     }
                     else
