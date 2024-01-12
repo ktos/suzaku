@@ -133,6 +133,13 @@ namespace Suzaku.Chat.Services
 			if (message.ConversationId is not null && message.ConversationId != c.CurrentConversationId)
 			{
 				c.CurrentConversationId = message.ConversationId.Value;
+				var marker = new NewConversationMarker
+				{
+					Id = Guid.NewGuid(),
+					Timestamp = DateTime.UtcNow
+				};
+
+				AddElement(marker, channelName);
 			}
 
 			// if there is a message from user and there are waiting non-interacted canned responses

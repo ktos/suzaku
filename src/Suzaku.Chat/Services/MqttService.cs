@@ -104,12 +104,12 @@ namespace Suzaku.Chat.Services
                                 {
                                     Sender = msg.Sender,
                                     Id = Guid.NewGuid(),
-                                    ConversationId = msg.ConversationId,
+                                    ConversationId = msg.ConversationId ?? Guid.NewGuid(),
                                     Content = msg.Content.Replace(ChatJsonMessage.ATTACHMENT, ""),
                                     Timestamp = DateTime.UtcNow
                                 };
 
-                                _repository.AddElement(attachment, channelName);
+                                _repository.AddMessage(attachment, channelName);
                             }
                             else if (msg.Content.StartsWith(ChatJsonMessage.CANNED))
                             {
@@ -118,7 +118,7 @@ namespace Suzaku.Chat.Services
                                     Sender = msg.Sender,
                                     Id = Guid.NewGuid(),
                                     Timestamp = DateTime.UtcNow,
-                                    ConversationId = msg.ConversationId,
+                                    ConversationId = msg.ConversationId ?? Guid.NewGuid(),
                                     Content = msg.Content.Replace(ChatJsonMessage.CANNED, ""),
                                     IsInteracted = false,
                                     Responses = msg.Content
@@ -127,7 +127,7 @@ namespace Suzaku.Chat.Services
                                         .ToList()
                                 };
 
-                                _repository.AddElement(canned, channelName);
+                                _repository.AddMessage(canned, channelName);
                             }
                             else
                             {
@@ -135,7 +135,7 @@ namespace Suzaku.Chat.Services
                                 {
                                     Sender = msg.Sender,
                                     Id = Guid.NewGuid(),
-                                    ConversationId = msg.ConversationId,
+                                    ConversationId = msg.ConversationId ?? Guid.NewGuid(),
                                     Content = msg.Content,
                                     Timestamp = DateTime.UtcNow
                                 };

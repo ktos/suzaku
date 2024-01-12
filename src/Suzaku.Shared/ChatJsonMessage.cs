@@ -10,7 +10,7 @@ namespace Suzaku.Shared
     public class ChatJsonMessage
     {
         [JsonPropertyName("conversation_id")]
-        public required Guid ConversationId { get; set; }
+        public Guid? ConversationId { get; set; }
 
         [JsonPropertyName("sender")]
         public required string Sender { get; set; }
