@@ -1,0 +1,15 @@
+﻿@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
+{
+	<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
+}
+else
+{
+	<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
+}
+
+@code {
+	/// <summary>
+	/// Timestamp to be displayed
+	/// </summary>
+	[Parameter] public required DateTime Timestamp { get; set; }
+}

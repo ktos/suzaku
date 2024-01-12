@@ -1,8 +1,8 @@
 ﻿<div class="d-flex justify-content-between">
-	<p class="small mb-1">@Sender</p>
+	<ParticipantName Name="@Sender" IsImportant="false"></ParticipantName>
 </div>
 <div class="d-flex flex-row justify-content-start">
-	<img src="@($"/avatars/{Sender.ToLower()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">	
+	<Avatar IsMine="false" Name="@Sender"></Avatar>
 		<div class="typing">			
 			<div class="dot"></div>
 			<div class="dot"></div>

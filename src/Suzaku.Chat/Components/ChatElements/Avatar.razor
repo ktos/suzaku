@@ -1,0 +1,24 @@
+﻿@using Suzaku.Chat.Models
+@using Suzaku.Shared
+@inject Microsoft.Extensions.Options.IOptions<UserConfiguration> UserConfig
+
+@if (IsMine)
+{
+	<img src="@UserConfig.Value.Avatar" class="rounded-circle" alt="" style="width: 55px; height: 100%;">
+}
+else
+{
+	<img src="@($"/avatars/{Name.ToNormalizedChannelName()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">
+}
+
+@code {
+	/// <summary>
+	/// Is it for user's avatar
+	/// </summary>
+	[Parameter] public bool IsMine { get; set; } = false;
+
+	/// <summary>
+	/// User's name to find avatar for
+	/// </summary>
+	[Parameter] public string Name { get; set; } = null!;
+}

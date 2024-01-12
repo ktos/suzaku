@@ -1,0 +1,38 @@
+﻿@using Suzaku.Chat.Models
+@using Suzaku.Shared
+@inject Microsoft.Extensions.Options.IOptions<UserConfiguration> UserConfig
+
+@if (IsMine)
+{
+	<p class="small mb-1 fw-bold">@UserConfig.Value.Name</p>
+}
+else
+{
+	@if (IsImportant)
+	{
+		<p class="small mb-1 fw-bold">
+			<a class="text-black text-decoration-none" href="/chat/@Name!.ToNormalizedChannelName()">@Name!.ToDisplayName()</a>
+		</p>
+	}
+	else
+	{
+		<p class="small mb-1">@Name!.ToDisplayName()</p>
+	}
+}
+
+@code {
+	/// <summary>
+	/// The participant name
+	/// </summary>
+	[Parameter] public string? Name { get; set; }
+
+	/// <summary>
+	/// If the name is important - if it is, it is bolder and clickable
+	/// </summary>
+	[Parameter] public bool IsImportant { get; set; } = true;
+
+	/// <summary>
+	/// Is the name for a human or a bot
+	/// </summary>
+	[Parameter] public required bool IsMine { get; set; }
+}

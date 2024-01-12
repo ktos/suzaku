@@ -8,21 +8,14 @@
 	if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			<p class="small mb-1 fw-bold"><a class="text-black text-decoration-none" href="/chat/@Element.Sender.ToLower()">@Element.Sender.FirstCharToUpper()</a></p>
-			@if (DateTime.Now.Date == Element.Timestamp.ToLocalTime().Date)
-			{
-				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("t")</p>
-			}
-			else
-			{
-				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("dd MMM") @Element.Timestamp.ToLocalTime().ToString("t")</p>
-			}
+			<ParticipantName Name="@Element.Sender"></ParticipantName>
+			<MessageTime Timestamp="Element.Timestamp"></MessageTime>
 		</div>
 	}
 	<div class="d-flex flex-row justify-content-start" style="@(IsGrouped ? "margin-top: -0.80rem; margin-left: 55px" : "")">
 		@if (!IsGrouped)
 		{
-			<img src="@($"/avatars/{Element.Sender.ToLower()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">
+			<Avatar IsMine="false" Name="@Element.Sender"></Avatar>
 		}
 		<div>
 			<div class="small ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
@@ -43,14 +36,7 @@ else
 	@if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			@if (DateTime.Now.Date == Element.Timestamp.ToLocalTime().Date)
-			{
-				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("t")</p>
-			}
-			else
-			{
-				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("dd MMM") @Element.Timestamp.ToLocalTime().ToString("t")</p>
-			}
+			<MessageTime Timestamp="Element.Timestamp"></MessageTime>
 			<p class="small mb-1 fw-bold">@UserConfig.Value.Name</p>
 		</div>
 	}
@@ -69,8 +55,7 @@ else
 		</div>
 		@if (!IsGrouped)
 		{
-			<img src="@UserConfig.Value.Avatar" class="rounded-circle"
-				 alt="" style="width: 55px; height: 100%;">
+			<Avatar IsMine="true"></Avatar>
 		}
 	</div>
 }
