@@ -25,7 +25,14 @@
 		}
 		<div>
 			<div class="small ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
-				<MarkdownSection Content="@Content"></MarkdownSection>
+				@if (Content.Length < 5 && IsEmoji(Content[0]))
+				{
+					<p class="fs-1">@Content</p>
+				}
+				else
+				{
+					<MarkdownSection Content="@Content"></MarkdownSection>
+				}
 			</div>
 		</div>
 	</div>
@@ -49,13 +56,20 @@ else
 	<div class="d-flex flex-row justify-content-end pt-1" style="@(IsGrouped ? "margin-top: -1.2rem; margin-right: 55px" : "")">
 		<div>
 			<div class="small p-2 pt-0 pb-0 me-3 text-white rounded-3 bg-warning">
-				<MarkdownSection Content="@Content"></MarkdownSection>
+				@if (Content.Length < 5 && IsEmoji(Content[0]))
+				{
+					<p class="fs-1">@Content</p>
+				}
+				else
+				{
+					<MarkdownSection Content="@Content"></MarkdownSection>
+				}
 			</div>
 		</div>
 		@if (!IsGrouped)
 		{
 			<img src="@UserConfig.Value.Avatar" class="rounded-circle"
-				 alt="avatar 1" style="width: 55px; height: 100%;">
+				 alt="" style="width: 55px; height: 100%;">
 		}
 	</div>
 }
@@ -66,4 +80,10 @@ else
 	[Parameter] public DateTime Timestamp { get; set; }
 	[Parameter] public bool IsMine { get; set; }
 	[Parameter] public bool IsGrouped { get; set; }
+
+	private bool IsEmoji(char character)
+	{
+		var category = Char.GetUnicodeCategory(character);
+		return category == System.Globalization.UnicodeCategory.OtherSymbol || category == System.Globalization.UnicodeCategory.Surrogate;
+	}
 }
