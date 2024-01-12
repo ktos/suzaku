@@ -1,4 +1,6 @@
-﻿@using Microsoft.Extensions.Options
+﻿@* The main chat window *@
+
+@using Microsoft.Extensions.Options
 @using Microsoft.JSInterop
 @using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
@@ -62,6 +64,11 @@
 		base.OnAfterRender(firstRender);
 	}
 
+	/// <summary>
+	/// Runs when the channel history has been updated, updates the displayed elements of the chat,
+	/// for example runs when there is new message
+	/// </summary>
+	/// <returns></returns>
 	public async Task OnChannelHistoryUpdated()
 	{
 		await InvokeAsync(() =>
@@ -73,6 +80,12 @@
 		ScrollToEnd();
 	}
 
+	/// <summary>
+	/// Runs when the user sends the message, first tries to parse the command or finally, publishes 
+	/// the message the current channel and conversation
+	/// </summary>
+	/// <param name="text"></param>
+	/// <returns></returns>
 	public async Task OnSendAsync(string text)
 	{
 		if (ChatCommandService.IsCommand(text))
@@ -85,10 +98,15 @@
 		}
 		else
 		{
-			await CommunicationService.PublishUserMessageAsync(text, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
+			await CommunicationService.PublishUserMessageOnCurrentChannelAndConversationAsync(text);
 		}
 	}
 
+	/// <summary>
+	/// Runs when the user selects the file to be uploaded and publishes the file to the chat
+	/// </summary>
+	/// <param name="fileName"></param>
+	/// <returns></returns>
 	public async Task OnSendFileAsync(string fileName)
 	{
 		await CommunicationService.PublishUserAttachmentAsync(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);

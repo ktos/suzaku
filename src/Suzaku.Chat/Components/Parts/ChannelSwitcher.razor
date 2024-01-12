@@ -1,4 +1,6 @@
-﻿@using Suzaku.Chat.Models
+﻿@* a channel switcher *@
+
+@using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
 @inject ChatHistory ChatHistory
 @inject NavigationManager NavigationManager
@@ -65,7 +67,7 @@
 		}
 	}
 
-	public async Task OnChannelRenamed()
+	private async Task OnChannelRenamed()
 	{
 		await InvokeAsync(() =>
 		{

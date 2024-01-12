@@ -2,6 +2,9 @@
 
 namespace Suzaku.Chat.Services
 {
+    /// <summary>
+    /// A service responsible for handling files
+    /// </summary>
     public class FileHandler
     {
         private readonly HttpClient client;
@@ -11,6 +14,12 @@ namespace Suzaku.Chat.Services
             client = httpClientFactory.CreateClient();
         }
 
+        /// <summary>
+        /// Handles uploading files into a chat
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="name"></param>
+        /// <returns>A name for an uploaded file in the /uploads directory</returns>
         public async Task<string> HandleUploadAsync(Stream stream, string name)
         {
             var extension = Path.GetExtension(name);
@@ -22,6 +31,11 @@ namespace Suzaku.Chat.Services
             return newName;
         }
 
+        /// <summary>
+        /// Handles downloading files from the internet into a chat
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns>A name for an uploaded file in the /uploads directory</returns>
         public async Task<string?> HandleAttachmentFromUriAsync(string uri)
         {
             try

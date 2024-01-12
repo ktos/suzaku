@@ -11,5 +11,8 @@
 </div>
 
 @code {
-	[Parameter] public string Sender { get; set; }	
+	/// <summary>
+	/// A sender of a busy marker, to present the avatar
+	/// </summary>
+	[Parameter] public required string Sender { get; set; }	
 }

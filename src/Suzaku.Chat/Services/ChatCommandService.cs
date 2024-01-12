@@ -2,6 +2,9 @@
 
 namespace Suzaku.Chat.Services
 {
+    /// <summary>
+    /// A service handling commands (messages starting with /) send by the user
+    /// </summary>
     public class ChatCommandService
     {
         private readonly ChatHistory _chatHistory;
@@ -19,6 +22,11 @@ namespace Suzaku.Chat.Services
             _fileHandler = fileHandler;
         }
 
+        /// <summary>
+        /// Checks if a given message text is a command
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public bool IsCommand(string message)
         {
             if (
@@ -34,6 +42,11 @@ namespace Suzaku.Chat.Services
             return false;
         }
 
+        /// <summary>
+        /// Executes command and optionally returns element to be included in a chat window
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         public async Task<Element?> ExecuteCommandAsync(string command)
         {
             if (command == "/new")

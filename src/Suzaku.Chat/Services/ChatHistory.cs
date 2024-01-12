@@ -4,6 +4,9 @@ using System.Text.Json;
 
 namespace Suzaku.Chat.Services
 {
+	/// <summary>
+	/// The main system tracking the history of the all conversations in all channels
+	/// </summary>
 	public class ChatHistory
 	{
 		private const string HISTORY_FILE_PATH = "history.json";
@@ -12,15 +15,28 @@ namespace Suzaku.Chat.Services
 		private readonly ChannelConfiguration _configuration;
 		private ChatChannel _currentChannel;
 
+		/// <summary>
+		/// The channel which is currently active in the chat window
+		/// </summary>
 		public ChatChannel CurrentChannel
 		{
 			get { return _currentChannel; }
 			private set { _currentChannel = value; ChannelHistoryUpdated?.Invoke(); }
 		}
 
+		/// <summary>
+		/// The default channel, default group chat, without a internal name, published to a suzaku/chat topic
+		/// </summary>
 		public ChatChannel DefaultChannel => _channels.First(x => x.Name is null);
 
+		/// <summary>
+		/// Fired when the channel history has been updated (by the new message usually)
+		/// </summary>
 		public event Func<Task>? ChannelHistoryUpdated;
+
+		/// <summary>
+		/// Fired when the channel list has been modified, by the channel rename command
+		/// </summary>
 		public event Func<Task>? ChannelRenamed;
 
 		public ChatHistory(IOptions<ChannelConfiguration> configuration)
@@ -40,11 +56,18 @@ namespace Suzaku.Chat.Services
 			_currentChannel = _channels.First();
 		}
 
+		/// <summary>
+		/// Sets the default group chat as the current channel
+		/// </summary>
 		public void SetDefaultChannelAsCurrent()
 		{
 			CurrentChannel = _channels.First(x => x.Name is null);
 		}
 
+		/// <summary>
+		/// Sets the channel with a given internal name as a current channel
+		/// </summary>
+		/// <param name="name"></param>
 		public void SetChannelAsCurrent(string? name)
 		{
 			CurrentChannel = FindByName(name);
@@ -81,6 +104,11 @@ namespace Suzaku.Chat.Services
 			return found ?? CreateNewChannel(channelName);
 		}
 
+		/// <summary>
+		/// Adds a new element to a history of a given channel name
+		/// </summary>
+		/// <param name="element"></param>
+		/// <param name="channelName"></param>
 		public void AddElement(Element element, string? channelName)
 		{
 			var c = FindByName(channelName);
@@ -89,29 +117,56 @@ namespace Suzaku.Chat.Services
 			SaveHistory();
 		}
 
+		/// <summary>
+		/// <para>Adds a new message to a history of a given channel name</para>
+		/// <para>Additionally, it updates the current conversation id if needed</para>
+		/// <para>If the last message was a list of canned responses, and the message is from the user, they are being marked as interacted with</para>
+		/// </summary>
+		/// <param name="message"></param>
+		/// <param name="channelName"></param>
 		public void AddMessage(Message message, string? channelName)
 		{
 			var c = FindByName(channelName);
+
+			// if a new conversation id, start a new conversation
 			if (message.ConversationId is not null && message.ConversationId != c.CurrentConversationId)
 			{
 				c.CurrentConversationId = message.ConversationId.Value;
+			}
 
-
+			// if there is a message from user and there are waiting non-interacted canned responses
+			// mark them as interacted already
+			if (message.Sender == "User")
+			{
+				c.History.Where(x => x is CannedResponses can && !can.IsInteracted).Select(x => x as CannedResponses).ToList().ForEach(x => x!.IsInteracted = true);
 			}
 
 			AddElement(message, channelName);
 		}
 
+		/// <summary>
+		/// Returns the current channels history
+		/// </summary>
+		/// <returns></returns>
 		public List<Element> GetCurrentChannelElements()
 		{
 			return _currentChannel.History.ToList();
 		}
 
+		/// <summary>
+		/// Returns all of the recorded channels apart from the default one
+		/// </summary>
+		/// <returns></returns>
 		public List<ChatChannel> GetChannels()
 		{
 			return _channels.Where(x => x.Name is not null).ToList();
 		}
 
+		/// <summary>
+		/// Adds a "busy" message to the given channel
+		/// </summary>
+		/// <param name="chat"></param>
+		/// <param name="channelName"></param>
 		public void AddBusyMessage(Busy chat, string? channelName)
 		{
 			var c = FindByName(channelName);
@@ -126,6 +181,11 @@ namespace Suzaku.Chat.Services
 			SaveHistory();
 		}
 
+		/// <summary>
+		/// Removes a "busy" message from a given channel for a given sender
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="channelName"></param>
 		public void RemoveBusyMessagesForSender(string sender, string? channelName)
 		{
 			var c = FindByName(channelName);
@@ -140,6 +200,9 @@ namespace Suzaku.Chat.Services
 			SaveHistory();
 		}
 
+		/// <summary>
+		/// Should be run when command updated the channel history or name, fires events
+		/// </summary>
 		public void UpdatedByCommand()
 		{
 			ChannelHistoryUpdated?.Invoke();
@@ -152,6 +215,11 @@ namespace Suzaku.Chat.Services
 			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_channels));
 		}
 
+		/// <summary>
+		/// Introduces a new conversation id for a given channel
+		/// </summary>
+		/// <param name="channelName"></param>
+		/// <param name="guid"></param>
 		public void NewConversationForChannel(string? channelName, Guid? guid = null)
 		{
 			var ch = FindByName(channelName);

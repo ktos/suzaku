@@ -1,4 +1,5 @@
-﻿@using Suzaku.Chat.Models
+﻿@using Suzaku.Chat.Helpers
+@using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
 @inject Microsoft.Extensions.Options.IOptions<UserConfiguration> UserConfig
 
@@ -7,32 +8,32 @@
 	if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			<p class="small mb-1 fw-bold">@Sender.FirstCharToUpper()</p>
-			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
+			<p class="small mb-1 fw-bold">@Element.Sender.FirstCharToUpper()</p>
+			@if (DateTime.Now.Date == Element.Timestamp.ToLocalTime().Date)
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
+				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("t")</p>
 			}
 			else
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
+				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("dd MMM") @Element.Timestamp.ToLocalTime().ToString("t")</p>
 			}
 		</div>
 	}
 	<div class="d-flex flex-row justify-content-start" style="@(IsGrouped ? "margin-top: -0.80rem; margin-left: 55px" : "")">
 		@if (!IsGrouped)
 		{
-			<img src="@($"/avatars/{Sender.ToLower()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">
+			<img src="@($"/avatars/{Element.Sender.ToLower()}.png")" alt="" style="width: 55px; height: 100%;" class="rounded-circle">
 		}
 		<div>
 			<div class="ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
 				<p>
-					<a class="small" href="/uploads/@Content">
-						@Content
+					<a class="small" href="/uploads/@Element.Content">
+						@Element.Content
 						@GeneratePreview()
 					</a>
 				</p>
 				<p class="fs-2 text-end">
-					<i class="ti ti-paperclip" onclick="copyToClipboard('@Content')"></i>
+					<i class="ti ti-paperclip" onclick="copyToClipboard('@Element.Content')"></i>
 				</p>
 			</div>
 		</div>
@@ -43,13 +44,13 @@ else
 	@if (!IsGrouped)
 	{
 		<div class="d-flex justify-content-between">
-			@if (DateTime.Now.Date == Timestamp.ToLocalTime().Date)
+			@if (DateTime.Now.Date == Element.Timestamp.ToLocalTime().Date)
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("t")</p>
+				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("t")</p>
 			}
 			else
 			{
-				<p class="small mb-1 text-muted">@Timestamp.ToLocalTime().ToString("dd MMM") @Timestamp.ToLocalTime().ToString("t")</p>
+				<p class="small mb-1 text-muted">@Element.Timestamp.ToLocalTime().ToString("dd MMM") @Element.Timestamp.ToLocalTime().ToString("t")</p>
 			}
 			<p class="small mb-1 fw-bold">@UserConfig.Value.Name</p>
 		</div>
@@ -58,13 +59,13 @@ else
 		<div>
 			<div class="p-2 pt-0 pb-0 me-3 text-white rounded-3 bg-warning">
 				<p>
-					<a class="small" href="/uploads/@Content">
-						@Content
+					<a class="small" href="/uploads/@Element.Content">
+						@Element.Content
 						@GeneratePreview()
 					</a>
 				</p>
 				<p class="fs-2 text-end">
-					<i class="ti ti-paperclip" onclick="copyToClipboard('@Content')"></i>
+					<i class="ti ti-paperclip" onclick="copyToClipboard('@Element.Content')"></i>
 				</p>
 			</div>
 		</div>
@@ -77,25 +78,36 @@ else
 }
 
 @code {
-	[Parameter] public string Sender { get; set; }
-	[Parameter] public string Content { get; set; }
-	[Parameter] public DateTime Timestamp { get; set; }
+	/// <summary>
+	/// The element (attachment) to be presented
+	/// </summary>
+	[Parameter] public required Attachment Element { get; set; }
+
+	/// <summary>
+	/// If the element should be presented as coming from the user or a bot
+	/// </summary>
 	[Parameter] public bool IsMine { get; set; }
+
+	/// <summary>
+	/// If the element should be presented in a short (grouped with previous) or a normal way
+	/// </summary>
 	[Parameter] public bool IsGrouped { get; set; }
 
 	private MarkupString GeneratePreview()
 	{
-		if (Content is null)
+		if (Element.Content is null)
 			return new MarkupString(string.Empty);
 
-		if (Content.ToLower().EndsWith(".jpg") || Content.ToLower().EndsWith(".gif") || Content.ToLower().EndsWith(".png") || Content.ToLower().EndsWith(".jpg") || Content.ToLower().EndsWith(".svg"))
+		// returns image preview
+		if (Element.Content.ToLower().EndsWith(".jpg") || Element.Content.ToLower().EndsWith(".gif") || Element.Content.ToLower().EndsWith(".png") || Element.Content.ToLower().EndsWith(".jpg") || Element.Content.ToLower().EndsWith(".svg"))
 		{
-			return new MarkupString("<br /><img src='/uploads/" + Content + "' alt='' style='max-width: 150px'>");
+			return new MarkupString("<br /><img src='/uploads/" + Element.Content + "' alt='' style='max-width: 150px'>");
 		}
 
-		if (Content.ToLower().EndsWith(".m4a") || Content.ToLower().EndsWith(".mp3"))
+		// returns audio preview
+		if (Element.Content.ToLower().EndsWith(".m4a") || Element.Content.ToLower().EndsWith(".mp3"))
 		{
-			return new MarkupString("<br /><audio src='/uploads/" + Content + "' alt='' controls>");
+			return new MarkupString("<br /><audio src='/uploads/" + Element.Content + "' alt='' controls>");
 		}
 
 		return new MarkupString(string.Empty);

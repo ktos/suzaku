@@ -1,4 +1,6 @@
-﻿<div class="input-group mb-0">
+﻿@* the main chat input *@
+
+<div class="input-group mb-0">
 	<form method="post" @onsubmit="Enter" class="w-100">
 		<div class="input-group">
 			<textarea @onkeyup="_handleKeyPress" @ref="textInput" @bind="message" @bind:event="oninput" tabindex="0" class="form-control focus-ring focus-ring-light" placeholder="Type the message (Shift+Enter for newline)" aria-label="message"></textarea>
@@ -16,6 +18,9 @@
 	private string message = string.Empty;
 	private ElementReference textInput;
 
+	/// <summary>
+	/// The attached function to be run when user presses "enter" or a button to send a message
+	/// </summary>
 	[Parameter] public EventCallback<string> OnSend { get; set; }
 
 	private async Task _handleKeyPress(KeyboardEventArgs e)

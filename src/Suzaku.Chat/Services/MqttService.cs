@@ -7,6 +7,9 @@ using System.Text.Json;
 
 namespace Suzaku.Chat.Services
 {
+    /// <summary>
+    /// Handles the communication over the MQTT protocol
+    /// </summary>
     public class MqttService : ICommunicationService
     {
         private readonly MqttFactory mqttFactory;
@@ -151,6 +154,7 @@ namespace Suzaku.Chat.Services
             };
         }
 
+        /// <inheritdoc/>
         public async Task InitializeAsync()
         {
             await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
@@ -166,6 +170,7 @@ namespace Suzaku.Chat.Services
             await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
         }
 
+        /// <inheritdoc/>
         public async Task PublishUserMessageAsync(
             string content,
             Guid conversationId,
@@ -191,7 +196,8 @@ namespace Suzaku.Chat.Services
             await mqttClient.PublishAsync(mqttMessage);
         }
 
-        public Task PublishUserMessageAsync(string content)
+        /// <inheritdoc/>
+        public Task PublishUserMessageOnCurrentChannelAndConversationAsync(string content)
         {
             return PublishUserMessageAsync(
                 content,
@@ -200,6 +206,7 @@ namespace Suzaku.Chat.Services
             );
         }
 
+        /// <inheritdoc/>
         public async Task PublishUserAttachmentAsync(
             string fileName,
             Guid conversationId,
@@ -224,20 +231,5 @@ namespace Suzaku.Chat.Services
 
             await mqttClient.PublishAsync(mqttMessage);
         }
-    }
-
-    public static class StringExtensions
-    {
-        public static string FirstCharToUpper(this string input) =>
-            input switch
-            {
-                null => throw new ArgumentNullException(nameof(input)),
-                ""
-                    => throw new ArgumentException(
-                        $"{nameof(input)} cannot be empty",
-                        nameof(input)
-                    ),
-                _ => string.Concat(input[0].ToString().ToUpper(), input.AsSpan(1))
-            };
     }
 }

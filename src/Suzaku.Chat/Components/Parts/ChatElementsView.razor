@@ -1,4 +1,6 @@
-﻿@using Microsoft.Extensions.Options
+﻿@* the main chat window content, shows the chat's elements in a proper way *@
+
+@using Microsoft.Extensions.Options
 @using Suzaku.Chat.Services
 @using Suzaku.Chat.Models
 @using Suzaku.Chat.Components.ChatElements
@@ -11,7 +13,7 @@
 
 	if (item is Busy busy)
 	{
-		<BusyMarker Sender="@busy.Sender"></BusyMarker>
+		<ChatBusyMarker Sender="@busy.Sender"></ChatBusyMarker>
 	}
 	else if (item is NewConversationMarker marker)
 	{
@@ -37,7 +39,7 @@
 			grouped = true;
 		}
 
-		<ChatAttachment IsGrouped="grouped" IsMine="@FormatIsMine(attachment)" Sender="@attachment.Sender" Timestamp="attachment.Timestamp" Content="@attachment.Content"></ChatAttachment>
+		<ChatAttachment IsGrouped="grouped" IsMine="@FormatIsMine(attachment)" Element="@attachment"></ChatAttachment>
 	}
 	else if (item is CannedResponses canned)
 	{
@@ -49,7 +51,7 @@
 				grouped = true;
 			}
 
-			<CannedResponsesView IsGrouped="grouped" Element="@canned"></CannedResponsesView>
+			<ChatCannedResponses IsGrouped="grouped" Element="@canned"></ChatCannedResponses>
 		}
 	}
 	else if (item is Message message)
@@ -60,11 +62,14 @@
 			grouped = true;
 		}
 
-		<ChatMessage IsGrouped="grouped" IsMine="@FormatIsMine(message)" Sender="@message.Sender" Timestamp="message.Timestamp" Content="@message.Content"></ChatMessage>
+		<ChatMessage IsGrouped="grouped" IsMine="@FormatIsMine(message)" Element="@message"></ChatMessage>
 	}
 }
 
 @code {
+	/// <summary>
+	/// List of elements to be shown
+	/// </summary>
 	[Parameter] public required IList<Element> Elements { get; set; }
 
 	private bool FormatIsMine(Message message)

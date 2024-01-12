@@ -1,4 +1,5 @@
-﻿@using Suzaku.Chat.Models
+﻿@using Suzaku.Chat.Helpers
+@using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
 @inject ICommunicationService CommService
 
@@ -35,12 +36,19 @@
 }
 
 @code {
+	/// <summary>
+	/// Should it be displayed in a normal or a grouped (short) form
+	/// </summary>
 	[Parameter] public bool IsGrouped { get; set; }
-	[Parameter] public CannedResponses Element { get; set; }
+
+	/// <summary>
+	/// The canned responses to present in a chat window
+	/// </summary>
+	[Parameter] public required CannedResponses Element { get; set; }
 
 	private async Task ResponseClickedAsync(string item)
 	{
 		Element.IsInteracted = true;
-		await CommService.PublishUserMessageAsync(item);
+		await CommService.PublishUserMessageOnCurrentChannelAndConversationAsync(item);
 	}
 }

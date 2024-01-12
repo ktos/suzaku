@@ -1,4 +1,6 @@
-﻿@using Suzaku.Chat.Services
+﻿@* shows the attachment panel with a upload input *@
+
+@using Suzaku.Chat.Services
 @inject FileHandler FileUploadHandler
 
 <div @ref="fileDropContainer">
@@ -22,9 +24,12 @@
 	private string? ErrorMessage;
 	ElementReference fileDropContainer;
 
+	/// <summary>
+	/// The handler to be run after the file has been uploaded
+	/// </summary>
 	[Parameter] public EventCallback<string> OnSendFile { get; set; }
 
-	async Task OnChange(InputFileChangeEventArgs e)
+	private async Task OnChange(InputFileChangeEventArgs e)
 	{
 		imageSources.Clear();
 		ErrorMessage = string.Empty;
@@ -54,6 +59,6 @@
 	}
 
 	private string HoverClass = "form-control";
-	void OnDragEnter(DragEventArgs e) => HoverClass = "form-control bg-success-subtle";
-	void OnDragLeave(DragEventArgs e) => HoverClass = "form-control";
+	private void OnDragEnter(DragEventArgs e) => HoverClass = "form-control bg-success-subtle";
+	private void OnDragLeave(DragEventArgs e) => HoverClass = "form-control";
 }
