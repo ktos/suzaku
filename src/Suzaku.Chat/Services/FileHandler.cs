@@ -22,7 +22,7 @@ namespace Suzaku.Chat.Services
             return newName;
         }
 
-        public async Task<string?> HandleAttachmentFromUri(string uri)
+        public async Task<string?> HandleAttachmentFromUriAsync(string uri)
         {
             try
             {

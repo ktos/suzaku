@@ -144,7 +144,11 @@ namespace Suzaku.Chat.Services
             await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
         }
 
-        public async Task PublishUserMessage(string content, Guid conversationId, string? chatName)
+        public async Task PublishUserMessageAsync(
+            string content,
+            Guid conversationId,
+            string? chatName
+        )
         {
             var chatMessage = new ChatJsonMessage
             {

@@ -77,7 +77,7 @@
 	{
 		if (ChatCommandService.IsCommand(text))
 		{
-			var result = await ChatCommandService.ParseCommandAsync(text);
+			var result = await ChatCommandService.ExecuteCommandAsync(text);
 			if (result != null)
 			{
 				ChatHistory.AddElement(result, ChatHistory.CurrentChannel.Name);
@@ -85,7 +85,7 @@
 		}
 		else
 		{
-			await CommunicationService.PublishUserMessage(text, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
+			await CommunicationService.PublishUserMessageAsync(text, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 		}
 	}
 

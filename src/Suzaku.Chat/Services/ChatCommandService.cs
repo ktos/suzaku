@@ -34,7 +34,7 @@ namespace Suzaku.Chat.Services
             return false;
         }
 
-        public async Task<Element?> ParseCommandAsync(string command)
+        public async Task<Element?> ExecuteCommandAsync(string command)
         {
             if (command == "/new")
             {
@@ -53,7 +53,7 @@ namespace Suzaku.Chat.Services
             else if (command.StartsWith("/attach "))
             {
                 var param = command.Substring("/attach ".Length).Trim();
-                var result = await _fileHandler.HandleAttachmentFromUri(param);
+                var result = await _fileHandler.HandleAttachmentFromUriAsync(param);
 
                 if (result != null)
                 {
@@ -67,13 +67,6 @@ namespace Suzaku.Chat.Services
                 {
                     return new Error { Content = $"Attaching failed (param: {param})" };
                 }
-
-                //return new Message
-                //{
-                //    Sender = "User",
-                //    Content = u.AbsolutePath,
-                //    Timestamp = DateTime.UtcNow
-                //};
             }
             return null;
         }
