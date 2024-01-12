@@ -498,5 +498,5 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
-docker.cmd
+builddocker.cmd
 uploads/
