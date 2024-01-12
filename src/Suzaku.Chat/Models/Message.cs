@@ -7,6 +7,7 @@ namespace Suzaku.Chat.Models
     [JsonDerivedType(typeof(Attachment), "attachment")]
     [JsonDerivedType(typeof(NewConversationMarker), "new-conv")]
     [JsonDerivedType(typeof(Error), "error")]
+    [JsonDerivedType(typeof(Info), "info")]
     public abstract class Element
     {
         public Guid Id { get; set; }
@@ -16,6 +17,11 @@ namespace Suzaku.Chat.Models
     public class NewConversationMarker : Element;
 
     public class Error : Element
+    {
+        public string? Content { get; set; }
+    }
+
+    public class Info : Element
     {
         public string? Content { get; set; }
     }

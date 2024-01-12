@@ -22,7 +22,12 @@
 		<div class="alert alert-danger">
 			@error.Content
 		</div>
-
+	}
+	else if (item is Info info)
+	{
+		<div class="alert alert-info">
+			@info.Content
+		</div>
 	}
 	else if (item is Attachment attachment)
 	{
