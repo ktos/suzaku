@@ -174,7 +174,7 @@ namespace Suzaku.Chat.Services
         public async Task PublishUserMessageAsync(
             string content,
             Guid conversationId,
-            string? chatName
+            string? channel
         )
         {
             var chatMessage = new ChatJsonMessage
@@ -185,8 +185,8 @@ namespace Suzaku.Chat.Services
             };
 
             var topic = PUBLIC_TOPIC;
-            if (chatName != null)
-                topic = $"suzaku/{chatName.ToLower()}/chat";
+            if (channel != null)
+                topic = $"suzaku/{channel.ToNormalizedChannelName()}/chat";
 
             var mqttMessage = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
@@ -222,7 +222,7 @@ namespace Suzaku.Chat.Services
 
             var topic = PUBLIC_TOPIC;
             if (chatName != null)
-                topic = $"suzaku/{chatName.ToLower()}/chat";
+                topic = $"suzaku/{chatName.ToNormalizedChannelName()}/chat";
 
             var mqttMessage = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)

@@ -2,6 +2,7 @@
 
 @using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
+@using Suzaku.Shared
 @inject ChatHistory ChatHistory
 @inject NavigationManager NavigationManager
 @inject Microsoft.Extensions.Options.IOptions<ChannelConfiguration> Options
@@ -23,7 +24,7 @@
 </div>
 
 @code {
-	private string? newChat;
+	private string newChat = string.Empty;
 	private List<ChatChannelConfiguration> displayedChannelList = new();
 
 	private string displayedChatName = "Suzaku";
@@ -31,7 +32,7 @@
 
 	private void NewChatEntered()
 	{
-		NavigationManager.NavigateTo($"/chat/{newChat}");
+		NavigationManager.NavigateTo($"/chat/{newChat.ToNormalizedChannelName()}");
 	}
 
 	private void UpdateChannelList()

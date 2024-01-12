@@ -33,8 +33,8 @@ namespace Suzaku.Bot.Services
             _botName = botOptions.Value.Name;
             _chatTopic = "suzaku/chat";
             _oobTopic = $"suzaku/chat_system";
-            _oobPrivateTopic = $"suzaku/{_botName.ToLower()}/chat_system";
-            _privateTopic = $"suzaku/{_botName.ToLower()}/chat";
+            _oobPrivateTopic = $"suzaku/{_botName.ToNormalizedChannelName()}/chat_system";
+            _privateTopic = $"suzaku/{_botName.ToNormalizedChannelName()}/chat";
 
             mqttFactory = new MqttFactory();
             mqttClient = mqttFactory.CreateMqttClient();

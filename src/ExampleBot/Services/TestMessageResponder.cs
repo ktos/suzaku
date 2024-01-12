@@ -29,6 +29,7 @@ namespace ExampleBot.Services
                 return null;
             }
 
+            await Task.Delay(1000);
             return "I cannot work with files :(";
         }
 

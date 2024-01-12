@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Suzaku.Chat.Models;
+using Suzaku.Shared;
 using System.Text.Json;
 
 namespace Suzaku.Chat.Services
@@ -73,7 +74,7 @@ namespace Suzaku.Chat.Services
 			CurrentChannel = FindByName(name);
 		}
 
-		private ChatChannel CreateNewChannel(string name)
+		private ChatChannel CreateNewChannelByName(string name)
 		{
 			var tryAlways = _configuration.AlwaysDisplayed.FirstOrDefault(x => x.Name == name);
 
@@ -85,7 +86,7 @@ namespace Suzaku.Chat.Services
 			}
 			else
 			{
-				created = new ChatChannel { Name = name.ToLower(), DisplayName = name, CurrentConversationId = Guid.NewGuid(), History = new List<Element>() };
+				created = new ChatChannel { Name = name.ToNormalizedChannelName(), DisplayName = name, CurrentConversationId = Guid.NewGuid(), History = new List<Element>() };
 			}
 
 			_channels.Add(created);
@@ -101,7 +102,7 @@ namespace Suzaku.Chat.Services
 			}
 
 			var found = _channels.FirstOrDefault(x => x.Name == channelName);
-			return found ?? CreateNewChannel(channelName);
+			return found ?? CreateNewChannelByName(channelName);
 		}
 
 		/// <summary>
