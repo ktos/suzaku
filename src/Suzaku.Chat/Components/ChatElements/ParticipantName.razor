@@ -1,6 +1,8 @@
 ﻿@using Suzaku.Chat.Models
+@using Suzaku.Chat.Services
 @using Suzaku.Shared
 @inject Microsoft.Extensions.Options.IOptions<UserConfiguration> UserConfig
+@inject ChatHistory ChatHistory
 
 @if (IsMine)
 {
@@ -11,12 +13,12 @@ else
 	@if (IsImportant)
 	{
 		<p class="small mb-1 fw-bold">
-			<a class="text-black text-decoration-none" href="/chat/@Name!.ToNormalizedChannelName()">@Name!.ToDisplayName()</a>
+			<a class="text-black text-decoration-none" href="/chat/@Name!.ToNormalizedChannelName()">@ChatHistory.GetParticipantDisplayName(Name!)</a>
 		</p>
 	}
 	else
 	{
-		<p class="small mb-1">@Name!.ToDisplayName()</p>
+		<p class="small mb-1">@ChatHistory.GetParticipantDisplayName(Name!)</p>
 	}
 }
 

@@ -6,6 +6,13 @@ using System.Text.Json;
 namespace Suzaku.Chat.Services
 {
 	/// <summary>
+	/// Conjecture of everything needed to be serialized to the history file
+	/// </summary>
+	/// <param name="BotDisplayNames"></param>
+	/// <param name="Channels"></param>
+	public record History(Dictionary<string, string> BotDisplayNames, List<ChatChannel> Channels);
+
+	/// <summary>
 	/// The main system tracking the history of the all conversations in all channels
 	/// </summary>
 	public class ChatHistory
@@ -15,6 +22,7 @@ namespace Suzaku.Chat.Services
 		private List<ChatChannel> _channels;
 		private readonly ChannelConfiguration _configuration;
 		private ChatChannel _currentChannel;
+		private Dictionary<string, string> botDisplayNames = new();
 
 		/// <summary>
 		/// The channel which is currently active in the chat window
@@ -47,14 +55,16 @@ namespace Suzaku.Chat.Services
 
 			if (File.Exists(HISTORY_FILE_PATH))
 			{
-				_channels = JsonSerializer.Deserialize<List<ChatChannel>>(File.ReadAllText(HISTORY_FILE_PATH)) ?? [];
+				var history = JsonSerializer.Deserialize<History>(File.ReadAllText(HISTORY_FILE_PATH)) ?? new History(new(), []);
+				_channels = history.Channels ?? [];
+				botDisplayNames = history.BotDisplayNames ?? new();
 			}
 
 			// if the history was empty, create at least a default channel
 			if (_channels is [])
 				_channels.Add(new ChatChannel { Name = null, DisplayName = configuration.Value.DefaultChannelName, CurrentConversationId = Guid.NewGuid(), History = new List<Element>() });
 
-			_currentChannel = _channels.First();
+			_currentChannel = _channels[0];
 		}
 
 		/// <summary>
@@ -148,6 +158,15 @@ namespace Suzaku.Chat.Services
 			{
 				c.History.Where(x => x is CannedResponses can && !can.IsInteracted).Select(x => x as CannedResponses).ToList().ForEach(x => x!.IsInteracted = true);
 			}
+			else
+			{
+				// if the message is not from user, save it's display form for formatting
+				var normalizedSender = message.Sender.ToNormalizedChannelName();
+				if (!botDisplayNames.ContainsKey(normalizedSender))
+				{
+					botDisplayNames.Add(normalizedSender, message.Sender);
+				}
+			}
 
 			AddElement(message, channelName);
 		}
@@ -220,7 +239,8 @@ namespace Suzaku.Chat.Services
 
 		private void SaveHistory()
 		{
-			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(_channels));
+			var history = new History(botDisplayNames, _channels);
+			File.WriteAllText(HISTORY_FILE_PATH, JsonSerializer.Serialize(history));
 		}
 
 		/// <summary>
@@ -240,6 +260,22 @@ namespace Suzaku.Chat.Services
 			};
 
 			AddElement(marker, channelName);
+		}
+
+		/// <summary>
+		/// Returns the bot's preferred display name
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
+		public string GetParticipantDisplayName(string name)
+		{
+			var normalizedName = name.ToNormalizedChannelName();
+			if (botDisplayNames.ContainsKey(normalizedName))
+				return botDisplayNames[normalizedName];
+			else
+			{
+				return normalizedName.FirstCharToUpper();
+			}
 		}
 	}
 }
