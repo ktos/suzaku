@@ -5,17 +5,17 @@ namespace Suzaku.Chat.Services
     public class ChatCommandService
     {
         private readonly ChatHistory _chatHistory;
-        private readonly MqttService _mqttService;
+        private readonly ICommunicationService _mqttService;
         private readonly FileHandler _fileHandler;
 
         public ChatCommandService(
             ChatHistory chatHistory,
-            MqttService mqttService,
+            ICommunicationService communicationService,
             FileHandler fileHandler
         )
         {
             _chatHistory = chatHistory;
-            _mqttService = mqttService;
+            _mqttService = communicationService;
             _fileHandler = fileHandler;
         }
 

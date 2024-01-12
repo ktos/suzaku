@@ -1,25 +1,25 @@
 ﻿@page "/"
-@page "/chat/{chat}"
+@page "/chat/{channel}"
 @using Suzaku.Chat.Services
 @rendermode InteractiveServer
 @inject ChatHistory ChatHistory
 
-<PageTitle>Suzaku – Home</PageTitle>
+<PageTitle>Suzaku – @(ChatHistory.CurrentChannel.DisplayName)</PageTitle>
 
 <ChatWindow></ChatWindow>
 
 @code {
-    [Parameter] public string? Chat { get; set; }
+    [Parameter] public string? Channel { get; set; }
 
     protected override void OnInitialized()
     {
-        if (Chat is null)
+        if (Channel is null)
         {
             ChatHistory.SetDefaultChannelAsCurrent();
         }
         else
         {
-            ChatHistory.SetChannelAsCurrent(Chat);
+            ChatHistory.SetChannelAsCurrent(Channel);
         }
 
         base.OnInitialized();

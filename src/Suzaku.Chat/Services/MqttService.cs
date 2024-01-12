@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace Suzaku.Chat.Services
 {
-    public class MqttService
+    public class MqttService : ICommunicationService
     {
         private readonly MqttFactory mqttFactory;
         private readonly IMqttClient mqttClient;

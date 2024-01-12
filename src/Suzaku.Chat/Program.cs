@@ -18,7 +18,7 @@ builder.Services.Configure<MqttConfiguration>(builder.Configuration.GetSection("
 builder.Services.Configure<UserConfiguration>(builder.Configuration.GetSection("User"));
 builder.Services.Configure<ChannelConfiguration>(builder.Configuration.GetSection("Channels"));
 builder.Services.AddSingleton<ChatHistory>();
-builder.Services.AddSingleton<MqttService>();
+builder.Services.AddSingleton<ICommunicationService, MqttService>();
 builder.Services.AddScoped<ChatCommandService>();
 builder.Services.AddScoped<FileHandler>();
 builder.Services.AddHttpClient();
@@ -57,6 +57,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(Counter).Assembly);
 
-await app.Services.GetRequiredService<MqttService>().InitializeAsync();
+await app.Services.GetRequiredService<ICommunicationService>().InitializeAsync();
 
 app.Run();

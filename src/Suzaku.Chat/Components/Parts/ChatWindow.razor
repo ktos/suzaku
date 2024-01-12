@@ -3,7 +3,7 @@
 @using Suzaku.Chat.Models
 @using Suzaku.Chat.Services
 @inject ChatHistory ChatHistory
-@inject MqttService MqttService
+@inject ICommunicationService CommunicationService
 @inject ChatCommandService ChatCommandService
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
@@ -85,13 +85,13 @@
 		}
 		else
 		{
-			await MqttService.PublishUserMessage(text, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
+			await CommunicationService.PublishUserMessage(text, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 		}
 	}
 
 	public async Task OnSendFileAsync(string fileName)
 	{
-		await MqttService.PublishUserAttachmentAsync(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
+		await CommunicationService.PublishUserAttachmentAsync(fileName, ChatHistory.CurrentChannel.CurrentConversationId, ChatHistory.CurrentChannel.Name);
 	}
 
 	public void Dispose() => ChatHistory.ChannelHistoryUpdated -= OnChannelHistoryUpdated;
