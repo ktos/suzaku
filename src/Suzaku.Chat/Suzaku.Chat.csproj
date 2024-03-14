@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Suzaku.Shared\Suzaku.Shared.csproj" />
     <ProjectReference Include="..\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj" />
-    <PackageReference Include="Markdig" Version="0.35.0" />
+    <PackageReference Include="Markdig" Version="0.36.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.3" />
     <PackageReference Include="MQTTnet" Version="4.3.3.952" />
   </ItemGroup>  
