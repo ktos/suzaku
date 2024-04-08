@@ -19,13 +19,16 @@
 		}
 		<div>
 			<div class="small ms-3 p-2 pt-0 pb-0 mb-3 rounded-3 chat-message" style="background-color: #f5f6f7">
-				@if (Element.Content!.Length < 5 && IsEmoji(Element.Content[0]))
+				@if (!string.IsNullOrWhiteSpace(Element.Content))
 				{
-					<p class="fs-1">@Element.Content</p>
-				}
-				else
-				{
-					<MarkdownSection Content="@Element.Content"></MarkdownSection>
+					if (Element.Content!.Length < 5 && IsEmoji(Element.Content[0]))
+					{
+						<p class="fs-1">@Element.Content</p>
+					}
+					else
+					{
+						<MarkdownSection Content="@Element.Content"></MarkdownSection>
+					}
 				}
 			</div>
 		</div>
