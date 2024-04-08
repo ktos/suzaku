@@ -16,7 +16,12 @@ namespace Suzaku.Bot.Services
             _history = new ConversationHistory();
         }
 
-        protected void UpdateHistory(string sender, string message, Guid conversationId)
+        protected void UpdateHistory(
+            string sender,
+            string message,
+            Guid conversationId,
+            bool isPrivate
+        )
         {
             _history.AddToHistory(sender, message, conversationId);
         }
@@ -40,12 +45,14 @@ namespace Suzaku.Bot.Services
         public abstract Task<string?> RespondAsync(
             string sender,
             string message,
-            Guid conversationId
+            Guid conversationId,
+            bool isPrivate
         );
         public abstract Task<string?> HandleFileUploadedAsync(
             string sender,
             string fileName,
-            Guid conversationId
+            Guid conversationId,
+            bool isPrivate
         );
     }
 }

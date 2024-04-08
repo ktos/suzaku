@@ -21,7 +21,8 @@ namespace ExampleBot.Services
         public override async Task<string?> HandleFileUploadedAsync(
             string sender,
             string fileName,
-            Guid conversationId
+            Guid conversationId,
+            bool isPrivate
         )
         {
             if (sender != "User")
@@ -36,7 +37,8 @@ namespace ExampleBot.Services
         public override async Task<string?> RespondAsync(
             string sender,
             string message,
-            Guid conversationId
+            Guid conversationId,
+            bool isPrivate
         )
         {
             if (sender != "User" || IsMessageToMe(message))
@@ -44,7 +46,7 @@ namespace ExampleBot.Services
                 return null;
             }
 
-            UpdateHistory(sender, message, conversationId);
+            UpdateHistory(sender, message, conversationId, isPrivate);
 
             await Task.Delay(1000);
             return $"Hey {sender}, conversation id is {conversationId}!\n\nPrevious messages: "

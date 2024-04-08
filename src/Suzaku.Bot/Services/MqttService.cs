@@ -90,7 +90,8 @@ namespace Suzaku.Bot.Services
                                 var result = await _responder.HandleFileUploadedAsync(
                                     msg.Sender,
                                     msg.Content.Replace("file:", ""),
-                                    msg.ConversationId.Value
+                                    msg.ConversationId.Value,
+                                    isPrivate
                                 );
                                 if (result != null)
                                     await PublishResponseMessage(
@@ -107,7 +108,8 @@ namespace Suzaku.Bot.Services
                                 var result = await _responder.RespondAsync(
                                     msg.Sender,
                                     msg.Content,
-                                    msg.ConversationId.Value
+                                    msg.ConversationId.Value,
+                                    isPrivate
                                 );
                                 if (result != null)
                                     await PublishResponseMessage(

@@ -18,13 +18,19 @@ namespace Suza.Services
         public async Task<string?> HandleFileUploadedAsync(
             string sender,
             string fileName,
-            Guid conversationId
+            Guid conversationId,
+            bool isPrivate
         )
         {
             return null;
         }
 
-        public async Task<string?> RespondAsync(string sender, string message, Guid conversationId)
+        public async Task<string?> RespondAsync(
+            string sender,
+            string message,
+            Guid conversationId,
+            bool isPrivate
+        )
         {
             if (sender != "User")
                 return null;
