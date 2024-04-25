@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="uploads\example.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Suzaku.Shared\Suzaku.Shared.csproj" />
     <ProjectReference Include="..\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj" />
     <PackageReference Include="Markdig" Version="0.37.0" />
