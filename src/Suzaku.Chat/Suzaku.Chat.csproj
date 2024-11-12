@@ -19,7 +19,7 @@
     <ProjectReference Include="..\Suzaku.Shared\Suzaku.Shared.csproj" />
     <ProjectReference Include="..\Suzaku.Chat.Client\Suzaku.Chat.Client.csproj" />
     <PackageReference Include="Markdig" Version="0.38.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.11" />
     <PackageReference Include="MQTTnet" Version="4.3.7.1207" />
   </ItemGroup>  
 
