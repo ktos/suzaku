@@ -1,0 +1,38 @@
+name: Push Docker Image
+on:
+  push: 
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+      - id: get-ver
+        shell: bash
+        name: Determine build number
+        run: |          
+          ver="$(git rev-list --count HEAD).0"
+          echo Version $ver
+          echo "ver=$ver" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.REGISTRY }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: src/Suzaku.Chat/Dockerfile
+          push: true
+          tags: | 
+            ${{ secrets.REGISTRY }}/suzaku:${{ steps.get-ver.outputs.ver }}
+            ${{ secrets.REGISTRY }}/suzaku:latest
+          build-args: |
+            SUZAKU_VERSION=${{ steps.get-ver.outputs.ver }}

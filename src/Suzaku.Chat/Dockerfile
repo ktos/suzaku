@@ -17,9 +17,10 @@ COPY . .
 WORKDIR "/src/src/Suzaku.Chat"
 RUN dotnet build "./Suzaku.Chat.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+ARG SUZAKU_VERSION
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Suzaku.Chat.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Suzaku.Chat.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:Version=$SUZAKU_VERSION
 
 FROM base AS final
 WORKDIR /app
