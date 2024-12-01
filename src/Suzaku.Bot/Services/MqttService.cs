@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Client;
 using Suzaku.Bot.Models;
 using Suzaku.Shared;
-using System.Text.Json;
 
 namespace Suzaku.Bot.Services
 {
@@ -40,6 +40,7 @@ namespace Suzaku.Bot.Services
             mqttClient = mqttFactory.CreateMqttClient();
             mqttClientOptions = new MqttClientOptionsBuilder()
                 .WithTcpServer(mqttOptions.Value.Host, mqttOptions.Value.Port)
+                .WithKeepAlivePeriod(TimeSpan.FromSeconds(60))
                 .Build();
 
             mqttClient.ApplicationMessageReceivedAsync += async e =>
@@ -130,6 +131,24 @@ namespace Suzaku.Bot.Services
 
                 return;
             };
+
+            mqttClient.DisconnectedAsync += (
+                async e =>
+                {
+                    _logger.LogError("MQTT disconnected! Trying to reconnect!");
+                    await Task.Delay(TimeSpan.FromSeconds(5));
+
+                    try
+                    {
+                        await InitializeAsync();
+                    }
+                    catch
+                    {
+                        _logger.LogCritical("Reconnect failed!");
+                        Environment.Exit(127);
+                    }
+                }
+            );
         }
 
         public async Task InitializeAsync()
@@ -156,7 +175,7 @@ namespace Suzaku.Bot.Services
             {
                 Sender = _botName,
                 Content = content,
-                ConversationId = conversationId
+                ConversationId = conversationId,
             };
 
             var mqttMessage = new MqttApplicationMessageBuilder()
@@ -177,7 +196,7 @@ namespace Suzaku.Bot.Services
             var chatMessage = new SystemJsonMessage
             {
                 Sender = _botName,
-                Content = isBusy ? SystemJsonMessage.BUSY : SystemJsonMessage.NOT_BUSY
+                Content = isBusy ? SystemJsonMessage.BUSY : SystemJsonMessage.NOT_BUSY,
             };
 
             var mqttMessage = new MqttApplicationMessageBuilder()
