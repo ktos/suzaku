@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Options;
 using MQTTnet;
-using MQTTnet.Client;
 using Suzaku.Chat.Models;
 using Suzaku.Shared;
-using System.Text.Json;
 
 namespace Suzaku.Chat.Services
 {
@@ -12,7 +11,7 @@ namespace Suzaku.Chat.Services
     /// </summary>
     public class MqttService : ICommunicationService
     {
-        private readonly MqttFactory mqttFactory;
+        private readonly MqttClientFactory mqttFactory;
         private readonly IMqttClient mqttClient;
         private readonly MqttClientOptions mqttClientOptions;
         private readonly ChatHistory _repository;
@@ -38,7 +37,7 @@ namespace Suzaku.Chat.Services
             _repository = repo;
             _logger = logger;
 
-            mqttFactory = new MqttFactory();
+            mqttFactory = new MqttClientFactory();
             mqttClient = mqttFactory.CreateMqttClient();
             mqttClientOptions = new MqttClientOptionsBuilder()
                 .WithTcpServer(options.Value.Host, options.Value.Port)
@@ -72,7 +71,7 @@ namespace Suzaku.Chat.Services
                                 {
                                     Sender = msg.Sender,
                                     Id = new Guid(),
-                                    Timestamp = DateTime.UtcNow
+                                    Timestamp = DateTime.UtcNow,
                                 };
 
                                 _repository.AddBusyMessage(chat, channelName);
@@ -106,7 +105,7 @@ namespace Suzaku.Chat.Services
                                     Id = Guid.NewGuid(),
                                     ConversationId = msg.ConversationId ?? Guid.NewGuid(),
                                     Content = msg.Content.Replace(ChatJsonMessage.ATTACHMENT, ""),
-                                    Timestamp = DateTime.UtcNow
+                                    Timestamp = DateTime.UtcNow,
                                 };
 
                                 _repository.AddMessage(attachment, channelName);
@@ -121,10 +120,10 @@ namespace Suzaku.Chat.Services
                                     ConversationId = msg.ConversationId ?? Guid.NewGuid(),
                                     Content = msg.Content.Replace(ChatJsonMessage.CANNED, ""),
                                     IsInteracted = false,
-                                    Responses = msg.Content
-                                        .Replace(ChatJsonMessage.CANNED, "")
+                                    Responses = msg
+                                        .Content.Replace(ChatJsonMessage.CANNED, "")
                                         .Split(';')
-                                        .ToList()
+                                        .ToList(),
                                 };
 
                                 _repository.AddMessage(canned, channelName);
@@ -137,7 +136,7 @@ namespace Suzaku.Chat.Services
                                     Id = Guid.NewGuid(),
                                     ConversationId = msg.ConversationId ?? Guid.NewGuid(),
                                     Content = msg.Content,
-                                    Timestamp = DateTime.UtcNow
+                                    Timestamp = DateTime.UtcNow,
                                 };
 
                                 _repository.AddMessage(chat, channelName);
@@ -181,7 +180,7 @@ namespace Suzaku.Chat.Services
             {
                 Content = content,
                 ConversationId = conversationId,
-                Sender = "User"
+                Sender = "User",
             };
 
             var topic = PUBLIC_TOPIC;
@@ -217,7 +216,7 @@ namespace Suzaku.Chat.Services
             {
                 Content = "file:" + fileName,
                 ConversationId = conversationId,
-                Sender = "User"
+                Sender = "User",
             };
 
             var topic = PUBLIC_TOPIC;
