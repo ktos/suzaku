@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
-using MQTTnet.Client;
 using Suzaku.Bot.Models;
 using Suzaku.Shared;
 
@@ -10,7 +9,7 @@ namespace Suzaku.Bot.Services
 {
     public class MqttService
     {
-        private readonly MqttFactory mqttFactory;
+        private readonly MqttClientFactory mqttFactory;
         private readonly IMqttClient mqttClient;
         private readonly MqttClientOptions mqttClientOptions;
         private readonly ILogger<MqttService> _logger;
@@ -36,7 +35,7 @@ namespace Suzaku.Bot.Services
             _oobPrivateTopic = $"suzaku/{_botName.ToNormalizedChannelName()}/chat_system";
             _privateTopic = $"suzaku/{_botName.ToNormalizedChannelName()}/chat";
 
-            mqttFactory = new MqttFactory();
+            mqttFactory = new MqttClientFactory();
             mqttClient = mqttFactory.CreateMqttClient();
             mqttClientOptions = new MqttClientOptionsBuilder()
                 .WithTcpServer(mqttOptions.Value.Host, mqttOptions.Value.Port)
