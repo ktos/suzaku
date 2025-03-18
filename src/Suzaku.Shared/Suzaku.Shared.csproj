@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Slugify.Core" Version="4.0.1" />
+    <PackageReference Include="Slugify.Core" Version="5.1.1" />
   </ItemGroup>
   
 </Project>
